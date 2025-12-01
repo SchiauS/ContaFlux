@@ -2,24 +2,36 @@
 
 Platformă web de analiză contabilă și productivitate organizațională asistată de inteligență artificială.
 
-## Ce conține repo-ul
-- **backend/app**: aplicație Laravel completă (API REST + integrare OpenAI) cu migrații și controlere gata de rulare.
+## Ce conține repo-ul acum
 - **docs/**: schiță arhitectură și funcționalități planificate.
+- **backend/stubs/**: fișiere Laravel pregătite pentru a fi copiate după generarea aplicației (controllers, servicii, config, rute, .env exemplar).
 - **frontend/**: pagină Bootstrap + jQuery cu layout de dashboard și chat pentru asistenta AI.
 
-## Pornire rapidă backend
-1. `cd backend/app`
-2. Copiază `.env.example` în `.env` și setează `OPENAI_API_KEY` + conexiunea DB (implicit SQLite).
-3. `composer install`
-4. `php artisan key:generate`
-5. `php artisan migrate`
-6. `php artisan serve` (API pe `http://localhost:8000`).
+## Pași rapizi de pornire (după ce ai acces la internet)
+1. Creează aplicația Laravel în folderul `backend`:
+   ```bash
+   cd backend
+   composer create-project laravel/laravel .
+   ```
+2. Copiază stubs-urile peste structura Laravel generată:
+   ```bash
+   cp -R stubs/app app
+   cp -R stubs/config config
+   cp stubs/routes/api.php routes/api.php
+   cp stubs/.env.example .env
+   ```
+3. Instalează cheile de aplicație și dependențele frontend:
+   ```bash
+   php artisan key:generate
+   npm install && npm run build   # dacă folosești Vite
+   ```
+4. Setează variabilele de mediu (`OPENAI_API_KEY`, date DB) în `.env`.
+5. Rulează migrațiile și serverul:
+   ```bash
+   php artisan migrate
+   php artisan serve
+   ```
+6. Deschide `frontend/index.html` (sau integrează-l în `resources/views`) și actualizează URL-urile din AJAX pentru backend.
 
-Endpoint-uri cheie: `/api/companies`, `/api/accounts`, `/api/transactions`, `/api/tasks`, `/api/dashboard/summary`, `/api/ai/*`, `/api/health`.
-
-## Frontend demo
-- `frontend/index.html` folosește Bootstrap + jQuery și poate fi servit static (actualizează URL-urile AJAX spre backend-ul de mai sus).
-
-## Note
-- Aplicația folosește implicit SQLite (`database/database.sqlite`). Pentru MySQL/PostgreSQL modifică variabilele `DB_*` în `.env`.
-- `OPENAI_API_KEY` este necesară pentru endpoint-urile AI (`/api/ai/*`).
+## Notă despre dependențe
+Mediul curent nu are acces la rețea pentru a descărca pachetele Composer/NPM, de aceea repo-ul conține doar structura pregătitoare. După ce ai acces la internet, rulează pașii de mai sus pentru a completa instalarea.
