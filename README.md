@@ -1,37 +1,29 @@
-# ContaFlux
+# ContaFlux Backend (Laravel 12)
 
-Platformă web de analiză contabilă și productivitate organizațională asistată de inteligență artificială.
+Aplicatie Laravel completă pentru platforma ContaFlux: gestionează companii, conturi, tranzacții, task-uri și sesiuni AI pentru asistentul financiar. API-ul expune resurse REST și endpoint-uri OpenAI.
 
-## Ce conține repo-ul acum
-- **docs/**: schiță arhitectură și funcționalități planificate.
-- **backend/stubs/**: fișiere Laravel pregătite pentru a fi copiate după generarea aplicației (controllers, servicii, config, rute, .env exemplar).
-- **frontend/**: pagină Bootstrap + jQuery cu layout de dashboard și chat pentru asistenta AI.
+## Instalare
+1. `cd backend/app`
+2. Copiază `.env.example` în `.env` și setează `OPENAI_API_KEY` + eventual conexiunea la MySQL dacă nu folosești SQLite.
+3. Instalează dependențele PHP: `composer install`
+4. Generează cheia aplicației: `php artisan key:generate`
+5. Rulează migrațiile: `php artisan migrate`
+6. Pornește serverul de dezvoltare: `php artisan serve`
 
-## Pași rapizi de pornire (după ce ai acces la internet)
-1. Creează aplicația Laravel în folderul `backend`:
-   ```bash
-   cd backend
-   composer create-project laravel/laravel .
-   ```
-2. Copiază stubs-urile peste structura Laravel generată:
-   ```bash
-   cp -R stubs/app app
-   cp -R stubs/config config
-   cp stubs/routes/api.php routes/api.php
-   cp stubs/.env.example .env
-   ```
-3. Instalează cheile de aplicație și dependențele frontend:
-   ```bash
-   php artisan key:generate
-   npm install && npm run build   # dacă folosești Vite
-   ```
-4. Setează variabilele de mediu (`OPENAI_API_KEY`, date DB) în `.env`.
-5. Rulează migrațiile și serverul:
-   ```bash
-   php artisan migrate
-   php artisan serve
-   ```
-6. Deschide `frontend/index.html` (sau integrează-l în `resources/views`) și actualizează URL-urile din AJAX pentru backend.
+## API-uri principale
+- **Companii / Conturi / Tranzacții / Task-uri**: rute `apiResource` (`/api/companies`, `/api/accounts`, `/api/transactions`, `/api/tasks`).
+- **Sesiuni AI**: `/api/ai-sessions` (listare, detalii, ștergere).
+- **Asistent AI**: `/api/ai/chat`, `/api/ai/summary`, `/api/ai/analyze` folosind `OpenAIService`.
+- **Dashboard**: `/api/dashboard/summary` (total debit/credit și task-uri deschise pentru perioada curentă).
+- **Healthcheck**: `/api/health`.
 
-## Notă despre dependențe
-Mediul curent nu are acces la rețea pentru a descărca pachetele Composer/NPM, de aceea repo-ul conține doar structura pregătitoare. După ce ai acces la internet, rulează pașii de mai sus pentru a completa instalarea.
+## Structură cheie
+- `app/Services/OpenAIService.php` – wrapper simplu peste API-ul OpenAI.
+- `app/Http/Controllers/*` – controlere REST și AI.
+- `database/migrations/*` – tabele pentru companii, conturi, tranzacții, task-uri și istoric conversații AI.
+
+## Testing
+- Rulează testele Laravel: `php artisan test`
+
+## Notă
+Aplicația folosește implicit SQLite (fișierul `database/database.sqlite`). Pentru MySQL/PostgreSQL modifică `DB_CONNECTION` și variabilele aferente din `.env`.
