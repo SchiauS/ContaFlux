@@ -7,9 +7,18 @@ use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Company::paginate();
+        $companies = Company::withCount(['accounts', 'tasks'])
+            ->latest()
+            ->paginate()
+            ->withQueryString();
+
+        if ($request->wantsJson()) {
+            return $companies;
+        }
+
+        return view('companies.index', ['companies' => $companies]);
     }
 
     public function store(Request $request)

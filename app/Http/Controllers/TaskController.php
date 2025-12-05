@@ -9,7 +9,7 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Task::with(['company', 'user']);
+        $query = Task::with(['company', 'user'])->latest();
 
         if ($request->filled('company_id')) {
             $query->where('company_id', $request->integer('company_id'));
@@ -19,7 +19,17 @@ class TaskController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        return $query->paginate();
+        $tasks = $query->paginate()->withQueryString();
+
+        if ($request->wantsJson()) {
+            return $tasks;
+        }
+
+        return view('tasks.index', [
+            'tasks' => $tasks,
+            'companies' => \App\Models\Company::orderBy('name')->pluck('name', 'id'),
+            'filters' => $request->only(['company_id', 'status']),
+        ]);
     }
 
     public function store(Request $request)

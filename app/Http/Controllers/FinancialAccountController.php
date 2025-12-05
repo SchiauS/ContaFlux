@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\FinancialAccount;
 use Illuminate\Http\Request;
 
@@ -9,13 +10,25 @@ class FinancialAccountController extends Controller
 {
     public function index(Request $request)
     {
-        $query = FinancialAccount::query();
+        $query = FinancialAccount::with('company');
 
         if ($request->filled('company_id')) {
             $query->where('company_id', $request->integer('company_id'));
         }
 
-        return $query->paginate();
+        $accounts = $query->paginate()->withQueryString();
+
+        if ($request->wantsJson()) {
+            return $accounts;
+        }
+
+        $companies = Company::orderBy('name')->pluck('name', 'id');
+
+        return view('accounts.index', [
+            'accounts' => $accounts,
+            'companies' => $companies,
+            'filters' => $request->only(['company_id']),
+        ]);
     }
 
     public function store(Request $request)

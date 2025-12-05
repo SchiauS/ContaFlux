@@ -19,7 +19,18 @@ class FinancialTransactionController extends Controller
             $query->where('financial_account_id', $request->integer('account_id'));
         }
 
-        return $query->paginate();
+        $transactions = $query->paginate()->withQueryString();
+
+        if ($request->wantsJson()) {
+            return $transactions;
+        }
+
+        return view('transactions.index', [
+            'transactions' => $transactions,
+            'companies' => \App\Models\Company::orderBy('name')->pluck('name', 'id'),
+            'accounts' => \App\Models\FinancialAccount::orderBy('code')->pluck('code', 'id'),
+            'filters' => $request->only(['company_id', 'account_id']),
+        ]);
     }
 
     public function store(Request $request)
