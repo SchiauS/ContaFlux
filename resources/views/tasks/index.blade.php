@@ -96,12 +96,12 @@
                                     <span class="badge bg-gradient-info text-uppercase">{{ $task->priority ?? 'N/A' }}</span>
                                 </td>
                                 <td>
-                                    <span class="badge
+                                    <span
                                         @class([
-                                            'bg-gradient-success' => $task->status == 'done',
-                                            'bg-gradient-warning' => $task->status == 'in_progress',
-                                            'bg-gradient-secondary' => $task->status == 'open',
-                                            'bg-gradient-secondary' => empty($task->status) ])">
+                                            'badge bg-gradient-success' => $task->status === 'done',
+                                            'badge bg-gradient-warning' => $task->status === 'in_progress',
+                                            'badge bg-gradient-secondary' => $task->status === 'open',
+                                            'badge bg-gradient-secondary' => empty($task->status) ])>
                                         {{ ucfirst($task->status ?? 'open') }}
                                     </span>
                                 </td>
