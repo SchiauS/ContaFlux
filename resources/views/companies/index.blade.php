@@ -7,7 +7,7 @@
     <div class="col-lg-8">
         <div class="card shadow-sm">
             <div class="card-header bg-gradient-primary text-white">
-                <h5 class="mb-0">Profil companie</h5>
+                <h5 class="mb-0 text-white">Profil companie</h5>
                 <small>Actualizează datele și preferințele organizației tale.</small>
             </div>
             <form method="POST" action="{{ route('companies.update', $company) }}">

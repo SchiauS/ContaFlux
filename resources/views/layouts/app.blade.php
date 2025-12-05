@@ -122,7 +122,7 @@
                             <div class="copyright text-center text-sm text-muted text-lg-start">
                                 © Schiau Sebastian-Adrian - <script>
                                     document.write(new Date().getFullYear())
-                                </script>. All rights reserved.
+                                </script>. Toate drepturile sunt rezervate.
                             </div>
                         </div>
                     </div>
