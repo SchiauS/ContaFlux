@@ -67,7 +67,7 @@
                             </select>
                         </div>
                         <div class="col-md-6 d-flex align-items-end">
-                            <button class="btn btn-primary w-100" type="submit">
+                            <button class="btn btn-primary w-100 m-0" type="submit">
                                 <i class="fa-solid fa-filter"></i> Filtrează
                             </button>
                         </div>
