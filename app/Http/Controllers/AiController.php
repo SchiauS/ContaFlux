@@ -18,15 +18,20 @@ class AiController extends Controller
     {
         $data = $request->validate([
             'session_id' => 'nullable|integer|exists:ai_sessions,id',
-            'message' => 'required|string',
+            'message' => 'required_without:prompt|nullable|string',
+            'prompt' => 'required_without:message|nullable|string',
             'context' => 'array',
             'topic' => 'nullable|string',
         ]);
 
+        $message = $data['message'] ?? $data['prompt'];
+
         $companyId = $request->user()->company_id;
 
-        $session = $data['session_id']
-            ? AiSession::where('company_id', $companyId)->findOrFail($data['session_id'])
+        $sessionId = $data['session_id'] ?? null;
+
+        $session = $sessionId
+            ? AiSession::where('company_id', $companyId)->findOrFail($sessionId)
             : AiSession::create([
                 'company_id' => $companyId,
                 'user_id' => $request->user()?->id,
@@ -49,13 +54,13 @@ class AiController extends Controller
             $contextMessages = array_merge($contextMessages, $data['context']);
         }
 
-        $reply = DB::transaction(function () use ($session, $data, $contextMessages) {
+        $reply = DB::transaction(function () use ($session, $data, $contextMessages, $message) {
             $session->messages()->create([
                 'role' => 'user',
-                'content' => $data['message'],
+                'content' => $message,
             ]);
 
-            $response = $this->openAIService->chat($data['message'], $contextMessages, (string) $session->id);
+            $response = $this->openAIService->chat($message, $contextMessages, (string) $session->id);
 
             $session->messages()->create([
                 'role' => 'assistant',
