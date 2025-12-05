@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $company = Company::firstOrCreate(
-            ['name' => 'ContaFlux Demo SRL'],
+            ['name' => 'Nebula Dev Studio SRL'],
             [
-                'fiscal_code' => 'RO12345678',
+                'fiscal_code' => 'RO98765432',
                 'currency' => 'RON',
                 'fiscal_year_start' => '2025-01-01',
                 'timezone' => 'Europe/Bucharest',
@@ -27,9 +27,9 @@ class DatabaseSeeder extends Seeder
         );
 
         User::firstOrCreate(
-            ['email' => 'test@example.com'],
+            ['email' => 'schiau.m.sebastianadrian25@stud.rau.ro'],
             [
-                'name' => 'Test User',
+                'name' => 'Schiau Sebastian-Adrian',
                 'password' => bcrypt('password'),
                 'company_id' => $company->id,
             ],
