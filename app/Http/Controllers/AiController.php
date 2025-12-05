@@ -18,16 +18,17 @@ class AiController extends Controller
     {
         $data = $request->validate([
             'session_id' => 'nullable|integer|exists:ai_sessions,id',
-            'company_id' => 'nullable|integer|exists:companies,id',
             'message' => 'required|string',
             'context' => 'array',
             'topic' => 'nullable|string',
         ]);
 
+        $companyId = $request->user()->company_id;
+
         $session = $data['session_id']
-            ? AiSession::find($data['session_id'])
+            ? AiSession::where('company_id', $companyId)->findOrFail($data['session_id'])
             : AiSession::create([
-                'company_id' => $data['company_id'] ?? null,
+                'company_id' => $companyId,
                 'user_id' => $request->user()?->id,
                 'topic' => $data['topic'] ?? 'chat financiar',
                 'model' => config('openai.model'),

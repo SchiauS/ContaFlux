@@ -9,38 +9,16 @@
                 <div class="card-header bg-gradient-primary text-white py-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
                     <div>
                         <h5 class="mb-0 text-white">Conturi financiare</h5>
-                        <span class="text-sm">Monitorizează planul de conturi și soldurile asociate.</span>
+                        <span class="text-sm">Companie: {{ $company->name }}</span>
                     </div>
-                    <div class="d-flex gap-2 mt-3 mt-md-0">
-                        <form class="d-flex gap-2" method="GET">
-                        <select name="company_id" class="form-select">
-                            <option value="">Toate companiile</option>
-                            @foreach($companies as $id => $name)
-                                <option value="{{ $id }}" @selected(($filters['company_id'] ?? '') == $id)>{{ $name }}</option>
-                            @endforeach
-                        </select>
-                        <button class="btn btn-light" type="submit">
-                            <i class="fa-solid fa-filter"></i> Filtrează
-                        </button>
-                        </form>
-                        <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#createAccountForm">
-                            <i class="fa-solid fa-plus"></i>
-                        </button>
-                    </div>
+                    <button class="btn btn-dark mt-3 mt-md-0" type="button" data-bs-toggle="collapse" data-bs-target="#createAccountForm">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
                 </div>
                 <div id="createAccountForm" class="collapse border-bottom">
                     <form class="p-4" method="POST" action="{{ route('accounts.store') }}">
                         @csrf
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label text-sm">Companie</label>
-                                <select name="company_id" class="form-select" required>
-                                    <option value="">Selectează</option>
-                                    @foreach($companies as $id => $name)
-                                        <option value="{{ $id }}">{{ $name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
                             <div class="col-md-4">
                                 <label class="form-label text-sm">Cod</label>
                                 <input type="text" class="form-control" name="code" required>

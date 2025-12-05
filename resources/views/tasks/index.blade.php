@@ -9,7 +9,7 @@
                 <div class="card-header bg-white d-flex flex-column flex-md-row align-items-md-center justify-content-between">
                     <div>
                         <h5 class="mb-0">Task-uri</h5>
-                        <span class="text-sm text-muted">Gestionarea activităților operaționale.</span>
+                        <span class="text-sm text-muted">Companie: {{ $company->name }}</span>
                     </div>
                     <button class="btn btn-primary btn-sm mt-3 mt-md-0" type="button" data-bs-toggle="collapse" data-bs-target="#createTaskForm">
                         <i class="fa-solid fa-plus me-1"></i> Adaugă task
@@ -19,15 +19,6 @@
                     <form class="p-4" method="POST" action="{{ route('tasks.store') }}">
                         @csrf
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label text-sm">Companie</label>
-                                <select name="company_id" class="form-select" required>
-                                    <option value="">Selectează</option>
-                                    @foreach($companies as $id => $name)
-                                        <option value="{{ $id }}">{{ $name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
                             <div class="col-md-4">
                                 <label class="form-label text-sm">Titlu</label>
                                 <input type="text" class="form-control" name="title" required>
@@ -66,16 +57,7 @@
                 </div>
                 <div class="card-body border-bottom">
                     <form class="row g-3" method="GET">
-                        <div class="col-md-4">
-                            <label class="form-label text-sm">Companie</label>
-                            <select name="company_id" class="form-select">
-                                <option value="">Toate</option>
-                                @foreach($companies as $id => $name)
-                                    <option value="{{ $id }}" @selected(($filters['company_id'] ?? '') == $id)>{{ $name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label text-sm">Status</label>
                             <select name="status" class="form-select">
                                 <option value="">Toate</option>
@@ -84,7 +66,7 @@
                                 <option value="done" @selected(($filters['status'] ?? '') === 'done')>Finalizat</option>
                             </select>
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-6 d-flex align-items-end">
                             <button class="btn btn-primary w-100" type="submit">
                                 <i class="fa-solid fa-filter"></i> Filtrează
                             </button>

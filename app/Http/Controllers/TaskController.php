@@ -3,23 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Task::with(['company', 'user'])->latest();
+        $companyId = $request->user()->company_id;
 
-        if ($request->filled('company_id')) {
-            $query->where('company_id', $request->integer('company_id'));
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
-        }
-
-        $tasks = $query->paginate()->withQueryString();
+        $tasks = Task::with(['company', 'user'])
+            ->where('company_id', $companyId)
+            ->when($request->filled('status'), fn ($q) => $q->where('status', $request->input('status')))
+            ->latest()
+            ->paginate()
+            ->withQueryString();
 
         if ($request->wantsJson()) {
             return $tasks;
@@ -27,15 +25,14 @@ class TaskController extends Controller
 
         return view('tasks.index', [
             'tasks' => $tasks,
-            'companies' => \App\Models\Company::orderBy('name')->pluck('name', 'id'),
-            'filters' => $request->only(['company_id', 'status']),
+            'company' => \App\Models\Company::findOrFail($companyId),
+            'filters' => $request->only(['status']),
         ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'company_id' => 'required|integer|exists:companies,id',
             'user_id' => 'nullable|integer|exists:users,id',
             'title' => 'required|string',
             'description' => 'nullable|string',
@@ -44,7 +41,13 @@ class TaskController extends Controller
             'priority' => 'nullable|string',
         ]);
 
-        $task = Task::create($data);
+        if (! empty($data['user_id']) && ! User::where('company_id', $request->user()->company_id)->whereKey($data['user_id'])->exists()) {
+            abort(403, 'Responsabilul trebuie să aparțină companiei tale.');
+        }
+
+        $task = Task::create(array_merge($data, [
+            'company_id' => $request->user()->company_id,
+        ]));
 
         if ($request->wantsJson()) {
             return response()->json($task->load(['company', 'user']), 201);
@@ -55,11 +58,13 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
+        $this->authorizeCompany($task->company_id);
         return $task->load(['company', 'user']);
     }
 
     public function update(Request $request, Task $task)
     {
+        $this->authorizeCompany($task->company_id);
         $data = $request->validate([
             'title' => 'sometimes|string',
             'description' => 'nullable|string',
@@ -79,6 +84,7 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
+        $this->authorizeCompany($task->company_id);
         $task->delete();
 
         if (request()->wantsJson()) {
@@ -86,5 +92,12 @@ class TaskController extends Controller
         }
 
         return redirect()->route('tasks.index')->with('status', 'Task-ul a fost șters.');
+    }
+
+    private function authorizeCompany(int $companyId): void
+    {
+        if ($companyId !== auth()->user()->company_id) {
+            abort(403, 'Nu ai acces la acest task.');
+        }
     }
 }

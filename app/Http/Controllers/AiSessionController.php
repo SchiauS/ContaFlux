@@ -9,24 +9,32 @@ class AiSessionController extends Controller
 {
     public function index(Request $request)
     {
-        $query = AiSession::withCount('messages')->latest();
+        $companyId = $request->user()->company_id;
 
-        if ($request->filled('company_id')) {
-            $query->where('company_id', $request->integer('company_id'));
-        }
-
-        return $query->paginate();
+        return AiSession::withCount('messages')
+            ->where('company_id', $companyId)
+            ->latest()
+            ->paginate();
     }
 
     public function show(AiSession $aiSession)
     {
+        $this->authorizeCompany($aiSession->company_id);
         return $aiSession->load('messages');
     }
 
     public function destroy(AiSession $aiSession)
     {
+        $this->authorizeCompany($aiSession->company_id);
         $aiSession->delete();
 
         return response()->noContent();
+    }
+
+    private function authorizeCompany(?int $companyId): void
+    {
+        if ($companyId !== auth()->user()->company_id) {
+            abort(403, 'Nu ai acces la această conversație AI.');
+        }
     }
 }

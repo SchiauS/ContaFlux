@@ -12,13 +12,17 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $companyId = auth()->user()->company_id;
+        $company = Company::findOrFail($companyId);
+
         $stats = [
-            'companies' => Company::count(),
-            'accounts' => FinancialAccount::count(),
-            'open_tasks' => Task::where('status', '!=', 'done')->count(),
+            'company' => $company,
+            'accounts' => $company->accounts()->count(),
+            'open_tasks' => $company->tasks()->where('status', '!=', 'done')->count(),
         ];
 
         $periodQuery = FinancialTransaction::query()
+            ->where('company_id', $companyId)
             ->whereBetween('occurred_at', [now()->startOfMonth(), now()->endOfMonth()]);
 
         $stats['revenue'] = (clone $periodQuery)->where('direction', 'credit')->sum('amount');
@@ -26,11 +30,13 @@ class DashboardController extends Controller
         $stats['balance'] = $stats['revenue'] - $stats['expenses'];
 
         $recentTransactions = FinancialTransaction::with('company')
+            ->where('company_id', $companyId)
             ->latest('occurred_at')
             ->take(5)
             ->get();
 
         $recentTasks = Task::with('company')
+            ->where('company_id', $companyId)
             ->latest()
             ->take(5)
             ->get();
@@ -44,14 +50,10 @@ class DashboardController extends Controller
 
     public function summary(Request $request)
     {
-        $companyId = $request->query('company_id');
+        $companyId = $request->user()->company_id;
         $period = $request->query('period', 'month');
 
-        $query = FinancialTransaction::query();
-
-        if ($companyId) {
-            $query->where('company_id', $companyId);
-        }
+        $query = FinancialTransaction::query()->where('company_id', $companyId);
 
         $start = match ($period) {
             'week' => now()->startOfWeek(),
