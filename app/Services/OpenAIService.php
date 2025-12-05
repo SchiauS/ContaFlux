@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -69,11 +71,21 @@ class OpenAIService
 
     private function post(string $path, array $payload): array
     {
-        $response = Http::withToken(config('openai.key'))
-            ->acceptJson()
-            ->post(rtrim(config('openai.base_url'), '/') . $path, $payload)
-            ->throw()
-            ->json();
+        try {
+            $response = Http::withToken(config('openai.key'))
+                ->acceptJson()
+                ->post(rtrim(config('openai.base_url'), '/') . $path, $payload)
+                ->throw()
+                ->json();
+        } catch (RequestException $exception) {
+            if ($exception->response?->status() === 429) {
+                throw new HttpResponseException(response()->json([
+                    'message' => 'Serviciul AI nu este disponibil momentan (limita de utilizare a fost atinsa). Incercati din nou mai tarziu.',
+                ], 429));
+            }
+
+            throw $exception;
+        }
 
         Log::info('OpenAI request', [
             'path' => $path,
