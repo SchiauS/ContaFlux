@@ -21,13 +21,34 @@ class DashboardController extends Controller
             'open_tasks' => $company->tasks()->where('status', '!=', 'done')->count(),
         ];
 
-        $periodQuery = FinancialTransaction::query()
+        $monthlyQuery = FinancialTransaction::query()
             ->where('company_id', $companyId)
             ->whereBetween('occurred_at', [now()->startOfMonth(), now()->endOfMonth()]);
 
-        $stats['revenue'] = (clone $periodQuery)->where('direction', 'credit')->sum('amount');
-        $stats['expenses'] = (clone $periodQuery)->where('direction', 'debit')->sum('amount');
-        $stats['balance'] = $stats['revenue'] - $stats['expenses'];
+        $yearlyQuery = FinancialTransaction::query()
+            ->where('company_id', $companyId)
+            ->whereBetween('occurred_at', [now()->startOfYear(), now()->endOfYear()]);
+
+        $stats['periods'] = [
+            'month' => [
+                'label' => 'Luna curentă',
+                'revenue' => (clone $monthlyQuery)->where('direction', 'credit')->sum('amount'),
+                'expenses' => (clone $monthlyQuery)->where('direction', 'debit')->sum('amount'),
+            ],
+            'year' => [
+                'label' => 'Anul curent',
+                'revenue' => (clone $yearlyQuery)->where('direction', 'credit')->sum('amount'),
+                'expenses' => (clone $yearlyQuery)->where('direction', 'debit')->sum('amount'),
+            ],
+        ];
+
+        foreach ($stats['periods'] as &$periodStats) {
+            $periodStats['balance'] = $periodStats['revenue'] - $periodStats['expenses'];
+        }
+        unset($periodStats);
+
+        $defaultPeriod = 'month';
+        $stats['balance'] = $stats['periods'][$defaultPeriod]['balance'];
 
         $recentTransactions = FinancialTransaction::with('company')
             ->where('company_id', $companyId)
@@ -43,6 +64,7 @@ class DashboardController extends Controller
 
         return view('dashboard.index', [
             'stats' => $stats,
+            'defaultPeriod' => $defaultPeriod,
             'recentTransactions' => $recentTransactions,
             'recentTasks' => $recentTasks,
         ]);

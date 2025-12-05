@@ -86,18 +86,27 @@
         <div class="col-lg-6">
             <div class="card h-100">
                 <div class="card-header pb-0">
-                    <div class="row">
+                    <div class="row align-items-center">
                         <div class="col-md-8">
-                            <h6>Flux financiar (luna curentă)</h6>
+                            <div class="d-flex align-items-center gap-2">
+                                <h6 class="mb-0">Flux financiar</h6>
+                                <small id="periodLabel" class="text-muted">({{ $stats['periods'][$defaultPeriod]['label'] }})</small>
+                            </div>
                             <p class="text-sm mb-0">
-                                <span class="font-weight-bold">Venituri:</span> {{ number_format($stats['revenue'], 2, '.', ' ') }} RON
+                                <span class="font-weight-bold">Venituri:</span> <span id="revenueValue">{{ number_format($stats['periods'][$defaultPeriod]['revenue'], 2, '.', ' ') }}</span> RON
                             </p>
                             <p class="text-sm mb-0">
-                                <span class="font-weight-bold">Cheltuieli:</span> {{ number_format($stats['expenses'], 2, '.', ' ') }} RON
+                                <span class="font-weight-bold">Cheltuieli:</span> <span id="expensesValue">{{ number_format($stats['periods'][$defaultPeriod]['expenses'], 2, '.', ' ') }}</span> RON
                             </p>
                         </div>
                         <div class="col-md-4 text-end">
-                            <span class="badge bg-gradient-success">AI Insights</span>
+                            <div class="d-flex justify-content-end align-items-center gap-2">
+                                <select id="periodSelect" class="form-select form-select-sm w-auto">
+                                    <option value="month" {{ $defaultPeriod === 'month' ? 'selected' : '' }}>Luna curentă</option>
+                                    <option value="year" {{ $defaultPeriod === 'year' ? 'selected' : '' }}>Anul curent</option>
+                                </select>
+                                <span class="badge bg-gradient-success">AI Insights</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -185,17 +194,25 @@
     <script src="{{ asset('argon/js/plugins/chartjs.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const periodStats = @json($stats['periods']);
+            const periodLabel = document.getElementById('periodLabel');
+            const revenueValue = document.getElementById('revenueValue');
+            const expensesValue = document.getElementById('expensesValue');
+            const periodSelect = document.getElementById('periodSelect');
+
+            const formatRON = (value) => new Intl.NumberFormat('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+
             const ctx = document.getElementById('balanceChart').getContext('2d');
-            new Chart(ctx, {
+            const balanceChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Venituri', 'Cheltuieli', 'Sold'],
                     datasets: [{
                         label: 'RON',
                         data: [
-                            {{ $stats['revenue'] }},
-                            {{ $stats['expenses'] }},
-                            {{ $stats['balance'] }}
+                            {{ $stats['periods'][$defaultPeriod]['revenue'] }},
+                            {{ $stats['periods'][$defaultPeriod]['expenses'] }},
+                            {{ $stats['periods'][$defaultPeriod]['balance'] }}
                         ],
                         backgroundColor: [
                             'rgba(66, 134, 244, 0.8)',
@@ -219,6 +236,26 @@
                         }
                     }
                 }
+            });
+
+            const updateFinancialSummary = (periodKey) => {
+                const selectedStats = periodStats[periodKey];
+
+                periodLabel.textContent = `(${selectedStats.label})`;
+                revenueValue.textContent = formatRON(selectedStats.revenue);
+                expensesValue.textContent = formatRON(selectedStats.expenses);
+
+                balanceChart.data.datasets[0].data = [
+                    selectedStats.revenue,
+                    selectedStats.expenses,
+                    selectedStats.balance
+                ];
+
+                balanceChart.update();
+            };
+
+            periodSelect.addEventListener('change', (event) => {
+                updateFinancialSummary(event.target.value);
             });
         });
     </script>
