@@ -101,9 +101,8 @@
                                             'bg-gradient-success' => $task->status === 'done',
                                             'bg-gradient-warning' => $task->status === 'in_progress',
                                             'bg-gradient-secondary' => $task->status === 'open',
-                                            'bg-gradient-secondary' => empty($task->status)
-                                    ])">
-                                        {{ ucfirst($task->status ?? 'open') }} {{$task->status }}
+                                            'bg-gradient-secondary' => empty($task->status) ])">
+                                        {{ ucfirst($task->status ?? 'open') }}
                                     </span>
                                 </td>
                                 <td class="text-sm">{{ optional($task->due_date)->format('d M Y') ?? '—' }}</td>
