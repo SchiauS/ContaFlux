@@ -49,6 +49,14 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-chart-pie text-primary"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Rapoarte</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('companies.*') ? 'active' : '' }}" href="{{ route('companies.index') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-building text-primary"></i>
@@ -70,6 +78,14 @@
                         <i class="fa-solid fa-file-invoice-dollar text-primary"></i>
                     </div>
                     <span class="nav-link-text ms-1">Tranzacții</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('employees.*') ? 'active' : '' }}" href="{{ route('employees.index') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-users text-primary"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Angajați</span>
                 </a>
             </li>
             <li class="nav-item">
