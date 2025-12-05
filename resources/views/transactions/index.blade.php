@@ -72,6 +72,7 @@
                             <th>Direcție</th>
                             <th>Suma</th>
                             <th>Data</th>
+                            <th class="text-end">Acțiuni</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -89,6 +90,70 @@
                                 </td>
                                 <td class="text-sm fw-bold">{{ number_format($transaction->amount, 2, '.', ' ') }} {{ $transaction->currency }}</td>
                                 <td class="text-sm text-muted">{{ optional($transaction->occurred_at)->format('d M Y') }}</td>
+                                <td class="text-end">
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-sm btn-outline-primary" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#editTransaction-{{ $transaction->id }}">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                        <form method="POST" action="{{ route('transactions.destroy', $transaction) }}"
+                                              onsubmit="return confirm('Sigur vrei să ștergi această tranzacție?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-sm btn-outline-danger" type="submit">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="editTransaction-{{ $transaction->id }}" class="collapse bg-light">
+                                <td colspan="6" class="p-4">
+                                    <form method="POST" action="{{ route('transactions.update', $transaction) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label text-sm">Cont</label>
+                                                <select name="financial_account_id" class="form-select" disabled>
+                                                    <option>{{ optional($transaction->account)->code ?? 'N/A' }}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-sm">Direcție</label>
+                                                <select name="direction" class="form-select">
+                                                    <option value="credit" @selected($transaction->direction === 'credit')>Credit</option>
+                                                    <option value="debit" @selected($transaction->direction === 'debit')>Debit</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-sm">Sumă</label>
+                                                <input type="number" step="0.01" class="form-control" name="amount" value="{{ $transaction->amount }}">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label text-sm">Monedă</label>
+                                                <input type="text" class="form-control" name="currency" value="{{ $transaction->currency }}">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label text-sm">Data</label>
+                                                <input type="date" class="form-control" name="occurred_at" value="{{ optional($transaction->occurred_at)->format('Y-m-d') }}">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label text-sm">Partener</label>
+                                                <input type="text" class="form-control" name="counterparty" value="{{ $transaction->counterparty }}">
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label text-sm">Descriere</label>
+                                                <textarea class="form-control" name="description" rows="2">{{ $transaction->description }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 d-flex justify-content-end">
+                                            <button class="btn btn-success" type="submit">
+                                                <i class="fa-solid fa-floppy-disk me-1"></i> Actualizează
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
                             </tr>
                         @empty
                             <tr>
