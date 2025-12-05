@@ -34,7 +34,11 @@ class CompanyController extends Controller
 
         $company = Company::create($data);
 
-        return response()->json($company, 201);
+        if ($request->wantsJson()) {
+            return response()->json($company, 201);
+        }
+
+        return redirect()->route('companies.index')->with('status', 'Compania a fost creată cu succes.');
     }
 
     public function show(Company $company)
@@ -55,13 +59,21 @@ class CompanyController extends Controller
 
         $company->update($data);
 
-        return response()->json($company);
+        if ($request->wantsJson()) {
+            return response()->json($company);
+        }
+
+        return redirect()->route('companies.index')->with('status', 'Compania a fost actualizată.');
     }
 
     public function destroy(Company $company)
     {
         $company->delete();
 
-        return response()->noContent();
+        if (request()->wantsJson()) {
+            return response()->noContent();
+        }
+
+        return redirect()->route('companies.index')->with('status', 'Compania a fost ștearsă.');
     }
 }

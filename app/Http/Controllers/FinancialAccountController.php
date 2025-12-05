@@ -45,7 +45,11 @@ class FinancialAccountController extends Controller
 
         $account = FinancialAccount::create($data);
 
-        return response()->json($account, 201);
+        if ($request->wantsJson()) {
+            return response()->json($account, 201);
+        }
+
+        return redirect()->route('accounts.index')->with('status', 'Contul a fost creat.');
     }
 
     public function show(FinancialAccount $financialAccount)
@@ -66,13 +70,21 @@ class FinancialAccountController extends Controller
 
         $financialAccount->update($data);
 
-        return response()->json($financialAccount);
+        if ($request->wantsJson()) {
+            return response()->json($financialAccount);
+        }
+
+        return redirect()->route('accounts.index')->with('status', 'Contul a fost actualizat.');
     }
 
     public function destroy(FinancialAccount $financialAccount)
     {
         $financialAccount->delete();
 
-        return response()->noContent();
+        if (request()->wantsJson()) {
+            return response()->noContent();
+        }
+
+        return redirect()->route('accounts.index')->with('status', 'Contul a fost șters.');
     }
 }

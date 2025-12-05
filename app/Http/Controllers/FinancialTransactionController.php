@@ -50,7 +50,11 @@ class FinancialTransactionController extends Controller
 
         $transaction = FinancialTransaction::create($data);
 
-        return response()->json($transaction->load(['account', 'company']), 201);
+        if ($request->wantsJson()) {
+            return response()->json($transaction->load(['account', 'company']), 201);
+        }
+
+        return redirect()->route('transactions.index')->with('status', 'Tranzacția a fost înregistrată.');
     }
 
     public function show(FinancialTransaction $financialTransaction)
@@ -73,13 +77,21 @@ class FinancialTransactionController extends Controller
 
         $financialTransaction->update($data);
 
-        return response()->json($financialTransaction->load(['account', 'company']));
+        if ($request->wantsJson()) {
+            return response()->json($financialTransaction->load(['account', 'company']));
+        }
+
+        return redirect()->route('transactions.index')->with('status', 'Tranzacția a fost actualizată.');
     }
 
     public function destroy(FinancialTransaction $financialTransaction)
     {
         $financialTransaction->delete();
 
-        return response()->noContent();
+        if (request()->wantsJson()) {
+            return response()->noContent();
+        }
+
+        return redirect()->route('transactions.index')->with('status', 'Tranzacția a fost ștearsă.');
     }
 }

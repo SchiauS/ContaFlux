@@ -11,7 +11,8 @@
                         <h5 class="mb-0 text-white">Conturi financiare</h5>
                         <span class="text-sm">Monitorizează planul de conturi și soldurile asociate.</span>
                     </div>
-                    <form class="d-flex gap-2 mt-3 mt-md-0" method="GET">
+                    <div class="d-flex gap-2 mt-3 mt-md-0">
+                        <form class="d-flex gap-2" method="GET">
                         <select name="company_id" class="form-select">
                             <option value="">Toate companiile</option>
                             @foreach($companies as $id => $name)
@@ -21,6 +22,58 @@
                         <button class="btn btn-light" type="submit">
                             <i class="fa-solid fa-filter"></i> Filtrează
                         </button>
+                        </form>
+                        <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#createAccountForm">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="createAccountForm" class="collapse border-bottom">
+                    <form class="p-4" method="POST" action="{{ route('accounts.store') }}">
+                        @csrf
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Companie</label>
+                                <select name="company_id" class="form-select" required>
+                                    <option value="">Selectează</option>
+                                    @foreach($companies as $id => $name)
+                                        <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Cod</label>
+                                <input type="text" class="form-control" name="code" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Nume</label>
+                                <input type="text" class="form-control" name="name" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Tip</label>
+                                <input type="text" class="form-control" name="type">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Categorie</label>
+                                <input type="text" class="form-control" name="category">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Activ</label>
+                                <select name="is_active" class="form-select">
+                                    <option value="1">Da</option>
+                                    <option value="0">Nu</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-sm">Descriere</label>
+                                <textarea class="form-control" name="description" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="mt-3 d-flex justify-content-end">
+                            <button class="btn btn-success" type="submit">
+                                <i class="fa-solid fa-floppy-disk me-1"></i> Salvează
+                            </button>
+                        </div>
                     </form>
                 </div>
                 <div class="card-body p-0">

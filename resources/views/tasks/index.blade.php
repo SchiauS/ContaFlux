@@ -6,9 +6,63 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Task-uri</h5>
-                    <span class="text-sm text-muted">Gestionarea activităților operaționale.</span>
+                <div class="card-header bg-white d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                    <div>
+                        <h5 class="mb-0">Task-uri</h5>
+                        <span class="text-sm text-muted">Gestionarea activităților operaționale.</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm mt-3 mt-md-0" type="button" data-bs-toggle="collapse" data-bs-target="#createTaskForm">
+                        <i class="fa-solid fa-plus me-1"></i> Adaugă task
+                    </button>
+                </div>
+                <div id="createTaskForm" class="collapse border-bottom">
+                    <form class="p-4" method="POST" action="{{ route('tasks.store') }}">
+                        @csrf
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Companie</label>
+                                <select name="company_id" class="form-select" required>
+                                    <option value="">Selectează</option>
+                                    @foreach($companies as $id => $name)
+                                        <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Titlu</label>
+                                <input type="text" class="form-control" name="title" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Responsabil (ID user)</label>
+                                <input type="number" class="form-control" name="user_id">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Status</label>
+                                <select name="status" class="form-select">
+                                    <option value="open">Open</option>
+                                    <option value="in_progress">In progress</option>
+                                    <option value="done">Done</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Prioritate</label>
+                                <input type="text" class="form-control" name="priority">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-sm">Termen</label>
+                                <input type="date" class="form-control" name="due_date">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-sm">Descriere</label>
+                                <textarea class="form-control" name="description" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="mt-3 d-flex justify-content-end">
+                            <button class="btn btn-success" type="submit">
+                                <i class="fa-solid fa-save me-1"></i> Salvează
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 <div class="card-body border-bottom">
                     <form class="row g-3" method="GET">

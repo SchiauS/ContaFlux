@@ -46,7 +46,11 @@ class TaskController extends Controller
 
         $task = Task::create($data);
 
-        return response()->json($task->load(['company', 'user']), 201);
+        if ($request->wantsJson()) {
+            return response()->json($task->load(['company', 'user']), 201);
+        }
+
+        return redirect()->route('tasks.index')->with('status', 'Task-ul a fost creat.');
     }
 
     public function show(Task $task)
@@ -66,13 +70,21 @@ class TaskController extends Controller
 
         $task->update($data);
 
-        return response()->json($task->load(['company', 'user']));
+        if ($request->wantsJson()) {
+            return response()->json($task->load(['company', 'user']));
+        }
+
+        return redirect()->route('tasks.index')->with('status', 'Task-ul a fost actualizat.');
     }
 
     public function destroy(Task $task)
     {
         $task->delete();
 
-        return response()->noContent();
+        if (request()->wantsJson()) {
+            return response()->noContent();
+        }
+
+        return redirect()->route('tasks.index')->with('status', 'Task-ul a fost șters.');
     }
 }

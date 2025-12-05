@@ -3,19 +3,51 @@
 @section('title', 'Companii')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-                    <div>
-                        <h5 class="mb-0">Companii</h5>
-                        <span class="text-sm text-muted">Organizații monitorizate în platformă.</span>
-                    </div>
-                    <a href="#" class="btn btn-primary mt-3 mt-md-0 disabled">
-                        <i class="fa-solid fa-plus"></i> Adaugă companie
-                    </a>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                <div>
+                    <h5 class="mb-0">Companii</h5>
+                    <span class="text-sm text-muted">Organizații monitorizate în platformă.</span>
                 </div>
-                <div class="table-responsive">
+                <button class="btn btn-primary mt-3 mt-md-0" data-bs-toggle="collapse" data-bs-target="#createCompanyForm">
+                    <i class="fa-solid fa-plus me-1"></i> Adaugă companie
+                </button>
+            </div>
+            <div id="createCompanyForm" class="collapse border-top">
+                <form class="p-4" method="POST" action="{{ route('companies.store') }}">
+                    @csrf
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Nume</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Cod fiscal</label>
+                            <input type="text" class="form-control" name="fiscal_code">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Monedă</label>
+                            <input type="text" class="form-control" name="currency" placeholder="RON">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Început exercițiu</label>
+                            <input type="date" class="form-control" name="fiscal_year_start">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Fus orar</label>
+                            <input type="text" class="form-control" name="timezone" placeholder="Europe/Bucharest">
+                        </div>
+                    </div>
+                    <div class="mt-3 d-flex justify-content-end">
+                        <button class="btn btn-success" type="submit">
+                            <i class="fa-solid fa-save me-1"></i> Salvează
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-responsive">
                     <table class="table align-items-center mb-0">
                         <thead>
                         <tr>
