@@ -31,8 +31,10 @@
 <div class="min-height-300 bg-primary position-absolute w-100"></div>
 <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 shadow-lg" id="sidenav-main">
     <div class="sidenav-header">
-        <a class="navbar-brand m-0" href="{{ route('dashboard') }}">
-            <img src="{{asset('favicon.svg')}}"><h5 class="font-weight-bolder text-dark">Conta</h5><h5 class="font-weight-bolder text-primary">Flux</h5>
+        <a class="navbar-brand m-0 d-flex align-items-center" href="{{ route('dashboard') }}">
+            <img src="{{asset('favicon.svg')}}" class="mr-2" height="32">
+            <h5 class="font-weight-bolder text-dark mb-0 mr-1">Conta</h5>
+            <h5 class="font-weight-bolder text-primary mb-0">Flux</h5>
         </a>
     </div>
     <hr class="horizontal light mt-0 mb-2">
