@@ -80,6 +80,15 @@
                 <button class="btn btn-sm btn-outline-light mb-0" data-bs-toggle="modal" data-bs-target="#aiAssistantModal">
                     <i class="fa-solid fa-robot me-1"></i> Asistent AI
                 </button>
+                <div class="ms-3 d-flex align-items-center gap-3">
+                    <div class="text-white text-sm d-none d-md-block">{{ auth()->user()->name }}</div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-light text-primary">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i> Delogare
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </nav>
@@ -128,34 +137,36 @@
 <script src="{{ asset('argon/js/plugins/smooth-scrollbar.min.js') }}"></script>
 <script src="{{ asset('argon/js/argon-dashboard.min.js') }}"></script>
 <script>
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    });
+    if (window.$) {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
 
-    $('#ai-chat-form').on('submit', function (e) {
-        e.preventDefault();
-        const prompt = $('#aiPrompt').val().trim();
-        if (!prompt.length) {
-            return;
-        }
-        const $btn = $('#aiSubmitBtn');
-        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Se procesează');
+        $('#ai-chat-form').on('submit', function (e) {
+            e.preventDefault();
+            const prompt = $('#aiPrompt').val().trim();
+            if (!prompt.length) {
+                return;
+            }
+            const $btn = $('#aiSubmitBtn');
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Se procesează');
 
-        $.post("{{ route('ai.chat') }}", { prompt })
-            .done(function (response) {
-                $('#aiResponseWrapper').removeClass('d-none');
-                $('#aiResponse').text(response.reply ?? JSON.stringify(response, null, 2));
-            })
-            .fail(function () {
-                $('#aiResponseWrapper').removeClass('d-none');
-                $('#aiResponse').text('A apărut o eroare. Încearcă din nou.');
-            })
-            .always(function () {
-                $btn.prop('disabled', false).html('<i class="fa-solid fa-paper-plane me-1"></i> Trimite');
-            });
-    });
+            $.post("{{ route('ai.chat') }}", { prompt })
+                .done(function (response) {
+                    $('#aiResponseWrapper').removeClass('d-none');
+                    $('#aiResponse').text(response.reply ?? JSON.stringify(response, null, 2));
+                })
+                .fail(function () {
+                    $('#aiResponseWrapper').removeClass('d-none');
+                    $('#aiResponse').text('A apărut o eroare. Încearcă din nou.');
+                })
+                .always(function () {
+                    $btn.prop('disabled', false).html('<i class="fa-solid fa-paper-plane me-1"></i> Trimite');
+                });
+        });
+    }
 </script>
 @stack('scripts')
 </body>

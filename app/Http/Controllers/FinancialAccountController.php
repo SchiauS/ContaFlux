@@ -10,31 +10,26 @@ class FinancialAccountController extends Controller
 {
     public function index(Request $request)
     {
-        $query = FinancialAccount::with('company');
+        $companyId = $request->user()->company_id;
 
-        if ($request->filled('company_id')) {
-            $query->where('company_id', $request->integer('company_id'));
-        }
-
-        $accounts = $query->paginate()->withQueryString();
+        $accounts = FinancialAccount::with('company')
+            ->where('company_id', $companyId)
+            ->paginate()
+            ->withQueryString();
 
         if ($request->wantsJson()) {
             return $accounts;
         }
 
-        $companies = Company::orderBy('name')->pluck('name', 'id');
-
         return view('accounts.index', [
             'accounts' => $accounts,
-            'companies' => $companies,
-            'filters' => $request->only(['company_id']),
+            'company' => Company::findOrFail($companyId),
         ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'company_id' => 'required|integer|exists:companies,id',
             'code' => 'required|string',
             'name' => 'required|string',
             'type' => 'nullable|string',
@@ -43,7 +38,9 @@ class FinancialAccountController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $account = FinancialAccount::create($data);
+        $account = FinancialAccount::create(array_merge($data, [
+            'company_id' => $request->user()->company_id,
+        ]));
 
         if ($request->wantsJson()) {
             return response()->json($account, 201);
@@ -54,11 +51,13 @@ class FinancialAccountController extends Controller
 
     public function show(FinancialAccount $financialAccount)
     {
+        $this->authorizeCompany($financialAccount->company_id);
         return $financialAccount->load('transactions');
     }
 
     public function update(Request $request, FinancialAccount $financialAccount)
     {
+        $this->authorizeCompany($financialAccount->company_id);
         $data = $request->validate([
             'code' => 'sometimes|string',
             'name' => 'sometimes|string',
@@ -79,6 +78,7 @@ class FinancialAccountController extends Controller
 
     public function destroy(FinancialAccount $financialAccount)
     {
+        $this->authorizeCompany($financialAccount->company_id);
         $financialAccount->delete();
 
         if (request()->wantsJson()) {
@@ -86,5 +86,12 @@ class FinancialAccountController extends Controller
         }
 
         return redirect()->route('accounts.index')->with('status', 'Contul a fost șters.');
+    }
+
+    private function authorizeCompany(int $companyId): void
+    {
+        if ($companyId !== auth()->user()->company_id) {
+            abort(403, 'Nu ai acces la acest cont.');
+        }
     }
 }

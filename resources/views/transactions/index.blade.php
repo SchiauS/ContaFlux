@@ -7,27 +7,18 @@
         <div class="col-lg-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex flex-column flex-md-row align-items-md-center justify-content-between">
-                    <h5 class="mb-0">Tranzacții financiare</h5>
-                    <div class="d-flex gap-2 mt-3 mt-md-0">
-                        <span class="text-sm text-muted d-inline-block me-3">Ultimele înregistrări contabile.</span>
-                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#createTransactionForm">
-                            <i class="fa-solid fa-plus me-1"></i> Adaugă
-                        </button>
+                    <div>
+                        <h5 class="mb-0">Tranzacții financiare</h5>
+                        <span class="text-sm text-muted d-inline-block">Companie: {{ $company->name }}</span>
                     </div>
+                    <button class="btn btn-primary btn-sm mt-3 mt-md-0" type="button" data-bs-toggle="collapse" data-bs-target="#createTransactionForm">
+                        <i class="fa-solid fa-plus me-1"></i> Adaugă
+                    </button>
                 </div>
                 <div id="createTransactionForm" class="collapse border-bottom">
                     <form class="p-4" method="POST" action="{{ route('transactions.store') }}">
                         @csrf
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label text-sm">Companie</label>
-                                <select name="company_id" class="form-select" required>
-                                    <option value="">Selectează</option>
-                                    @foreach($companies as $id => $name)
-                                        <option value="{{ $id }}">{{ $name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
                             <div class="col-md-4">
                                 <label class="form-label text-sm">Cont</label>
                                 <select name="financial_account_id" class="form-select" required>
@@ -68,33 +59,6 @@
                         <div class="mt-3 d-flex justify-content-end">
                             <button class="btn btn-success" type="submit">
                                 <i class="fa-solid fa-floppy-disk me-1"></i> Salvează
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-body border-bottom">
-                    <form class="row g-3" method="GET">
-                        <div class="col-md-4">
-                            <label class="form-label text-sm">Companie</label>
-                            <select name="company_id" class="form-select">
-                                <option value="">Toate</option>
-                                @foreach($companies as $id => $name)
-                                    <option value="{{ $id }}" @selected(($filters['company_id'] ?? '') == $id)>{{ $name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label text-sm">Cont</label>
-                            <select name="account_id" class="form-select">
-                                <option value="">Toate</option>
-                                @foreach($accounts as $id => $code)
-                                    <option value="{{ $id }}" @selected(($filters['account_id'] ?? '') == $id)>{{ $code }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <button class="btn btn-primary w-100" type="submit">
-                                <i class="fa-solid fa-filter"></i> Aplică filtre
                             </button>
                         </div>
                     </form>

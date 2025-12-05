@@ -9,36 +9,9 @@ class CompanyController extends Controller
 {
     public function index(Request $request)
     {
-        $companies = Company::withCount(['accounts', 'tasks'])
-            ->latest()
-            ->paginate()
-            ->withQueryString();
+        $company = $request->user()->company()->withCount(['accounts', 'tasks'])->firstOrFail();
 
-        if ($request->wantsJson()) {
-            return $companies;
-        }
-
-        return view('companies.index', ['companies' => $companies]);
-    }
-
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'name' => 'required|string',
-            'fiscal_code' => 'nullable|string',
-            'currency' => 'nullable|string|size:3',
-            'fiscal_year_start' => 'nullable|date',
-            'timezone' => 'nullable|string',
-            'settings' => 'array',
-        ]);
-
-        $company = Company::create($data);
-
-        if ($request->wantsJson()) {
-            return response()->json($company, 201);
-        }
-
-        return redirect()->route('companies.index')->with('status', 'Compania a fost creată cu succes.');
+        return view('companies.index', ['company' => $company]);
     }
 
     public function show(Company $company)
@@ -48,6 +21,10 @@ class CompanyController extends Controller
 
     public function update(Request $request, Company $company)
     {
+        if ($company->id !== $request->user()->company_id) {
+            abort(403, 'Nu ai acces la această companie.');
+        }
+
         $data = $request->validate([
             'name' => 'sometimes|string',
             'fiscal_code' => 'nullable|string',
@@ -55,7 +32,17 @@ class CompanyController extends Controller
             'fiscal_year_start' => 'nullable|date',
             'timezone' => 'nullable|string',
             'settings' => 'array',
+            'settings.working_hours' => 'nullable|string',
+            'settings.positions' => 'nullable',
         ]);
+
+        if (! empty($data['settings']['positions']) && is_string($data['settings']['positions'])) {
+            $data['settings']['positions'] = array_filter(array_map('trim', explode(',', $data['settings']['positions'])));
+        }
+
+        if (isset($data['settings'])) {
+            $data['settings'] = array_merge($company->settings ?? [], $data['settings']);
+        }
 
         $company->update($data);
 

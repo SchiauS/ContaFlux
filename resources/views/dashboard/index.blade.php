@@ -10,8 +10,8 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Companii</p>
-                                <h5 class="font-weight-bolder">{{ $stats['companies'] }}</h5>
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Compania mea</p>
+                                <h5 class="font-weight-bolder">{{ $stats['company']->name }}</h5>
                             </div>
                         </div>
                         <div class="col-4 text-end">

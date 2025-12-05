@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FinancialAccount;
 use App\Models\FinancialTransaction;
 use Illuminate\Http\Request;
 
@@ -9,17 +10,13 @@ class FinancialTransactionController extends Controller
 {
     public function index(Request $request)
     {
-        $query = FinancialTransaction::with(['account', 'company'])->orderByDesc('occurred_at');
+        $companyId = $request->user()->company_id;
 
-        if ($request->filled('company_id')) {
-            $query->where('company_id', $request->integer('company_id'));
-        }
-
-        if ($request->filled('account_id')) {
-            $query->where('financial_account_id', $request->integer('account_id'));
-        }
-
-        $transactions = $query->paginate()->withQueryString();
+        $transactions = FinancialTransaction::with(['account', 'company'])
+            ->where('company_id', $companyId)
+            ->orderByDesc('occurred_at')
+            ->paginate()
+            ->withQueryString();
 
         if ($request->wantsJson()) {
             return $transactions;
@@ -27,16 +24,14 @@ class FinancialTransactionController extends Controller
 
         return view('transactions.index', [
             'transactions' => $transactions,
-            'companies' => \App\Models\Company::orderBy('name')->pluck('name', 'id'),
-            'accounts' => \App\Models\FinancialAccount::orderBy('code')->pluck('code', 'id'),
-            'filters' => $request->only(['company_id', 'account_id']),
+            'company' => \App\Models\Company::findOrFail($companyId),
+            'accounts' => \App\Models\FinancialAccount::where('company_id', $companyId)->orderBy('code')->pluck('code', 'id'),
         ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'company_id' => 'required|integer|exists:companies,id',
             'financial_account_id' => 'required|integer|exists:financial_accounts,id',
             'counterparty' => 'nullable|string',
             'description' => 'nullable|string',
@@ -48,7 +43,13 @@ class FinancialTransactionController extends Controller
             'metadata' => 'array',
         ]);
 
-        $transaction = FinancialTransaction::create($data);
+        if (! FinancialAccount::where('company_id', $request->user()->company_id)->whereKey($data['financial_account_id'])->exists()) {
+            abort(403, 'Contul selectat nu aparține companiei tale.');
+        }
+
+        $transaction = FinancialTransaction::create(array_merge($data, [
+            'company_id' => $request->user()->company_id,
+        ]));
 
         if ($request->wantsJson()) {
             return response()->json($transaction->load(['account', 'company']), 201);
@@ -59,11 +60,13 @@ class FinancialTransactionController extends Controller
 
     public function show(FinancialTransaction $financialTransaction)
     {
+        $this->authorizeCompany($financialTransaction->company_id);
         return $financialTransaction->load(['account', 'company']);
     }
 
     public function update(Request $request, FinancialTransaction $financialTransaction)
     {
+        $this->authorizeCompany($financialTransaction->company_id);
         $data = $request->validate([
             'counterparty' => 'nullable|string',
             'description' => 'nullable|string',
@@ -86,6 +89,7 @@ class FinancialTransactionController extends Controller
 
     public function destroy(FinancialTransaction $financialTransaction)
     {
+        $this->authorizeCompany($financialTransaction->company_id);
         $financialTransaction->delete();
 
         if (request()->wantsJson()) {
@@ -93,5 +97,12 @@ class FinancialTransactionController extends Controller
         }
 
         return redirect()->route('transactions.index')->with('status', 'Tranzacția a fost ștearsă.');
+    }
+
+    private function authorizeCompany(int $companyId): void
+    {
+        if ($companyId !== auth()->user()->company_id) {
+            abort(403, 'Nu ai acces la această tranzacție.');
+        }
     }
 }
