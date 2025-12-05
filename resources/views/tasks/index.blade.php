@@ -55,7 +55,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="card-body border-bottom">
+                <div class="card-body border-bottom pt-0">
                     <form class="row g-3" method="GET">
                         <div class="col-md-6">
                             <label class="form-label text-sm">Status</label>

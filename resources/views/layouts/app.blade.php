@@ -32,7 +32,7 @@
 <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 shadow-lg" id="sidenav-main">
     <div class="sidenav-header">
         <a class="navbar-brand m-0" href="{{ route('dashboard') }}">
-            <img src="{{asset('logo.svg')}}">
+            <img src="{{asset('favicon.svg')}}"><h5 class="font-weight-bolder text-dark">Conta</h5><h5 class="font-weight-bolder text-primary">Flux</h5>
         </a>
     </div>
     <hr class="horizontal light mt-0 mb-2">

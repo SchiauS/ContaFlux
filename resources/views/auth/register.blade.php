@@ -38,7 +38,7 @@
                 @enderror
             </div>
             <div class="col-md-6">
-                <div class="input-group input-group-outline mb-3">
+                <div class="form-group mb-3">
                     <label class="form-label">Confirmare parolă</label>
                     <input type="password" class="form-control" name="password_confirmation" required>
                 </div>
@@ -50,7 +50,7 @@
                 <h6 class="text-uppercase text-body text-xs font-weight-bolder">Setări companie</h6>
             </div>
             <div class="col-12">
-                <div class="input-group input-group-outline my-3">
+                <div class="form-group my-3">
                     <label class="form-label">Nume companie</label>
                     <input type="text" class="form-control" name="company_name" value="{{ old('company_name') }}" required>
                 </div>
@@ -59,25 +59,25 @@
                 @enderror
             </div>
             <div class="col-md-4">
-                <div class="input-group input-group-outline mb-3">
+                <div class="form-group mb-3">
                     <label class="form-label">Monedă</label>
                     <input type="text" class="form-control" name="currency" maxlength="3" value="{{ old('currency', 'RON') }}">
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="input-group input-group-outline mb-3">
+                <div class="form-group mb-3">
                     <label class="form-label">Fus orar</label>
                     <input type="text" class="form-control" name="timezone" value="{{ old('timezone', 'Europe/Bucharest') }}">
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="input-group input-group-outline mb-3">
+                <div class="form-group mb-3">
                     <label class="form-label">Program lucru</label>
                     <input type="text" class="form-control" name="working_hours" placeholder="09:00-18:00" value="{{ old('working_hours') }}">
                 </div>
             </div>
             <div class="col-12">
-                <div class="input-group input-group-outline mb-3">
+                <div class="form-group mb-3">
                     <label class="form-label">Roluri / poziții</label>
                     <input type="text" class="form-control" name="positions" placeholder="Contabil, Manager, Operator" value="{{ old('positions') }}">
                 </div>
