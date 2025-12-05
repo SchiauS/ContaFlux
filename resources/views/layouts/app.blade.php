@@ -14,6 +14,7 @@
     <link href="{{ asset('argon/css/nucleo-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('argon/css/nucleo-svg.css') }}" rel="stylesheet">
     <link href="{{ asset('argon/css/argon-dashboard.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('argon/css/daterangepicker.css') }}" rel="stylesheet">
     <style>
         .modal-backdrop {
             z-index: 1400 !important;
@@ -179,6 +180,7 @@
 <script src="{{ asset('argon/js/plugins/perfect-scrollbar.min.js') }}"></script>
 <script src="{{ asset('argon/js/plugins/smooth-scrollbar.min.js') }}"></script>
 <script src="{{ asset('argon/js/argon-dashboard.min.js') }}"></script>
+<script src="{{ asset('argon/js/daterangepicker.js') }}"></script>
 <script>
     if (window.$) {
         $.ajaxSetup({

@@ -13,16 +13,22 @@
                     </div>
                     <form class="d-flex align-items-center gap-2" method="GET" action="{{ route('reports.index') }}">
                         <div>
-                            <label class="form-label text-xs mb-1">De la</label>
-                            <input type="date" name="start_date" class="form-control form-control-sm"
-                                   value="{{ $startDate }}">
-                        </div>
-                        <div>
-                            <label class="form-label text-xs mb-1">Până la</label>
-                            <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $endDate }}">
+                            <label class="form-label text-xs mb-1">Perioadă cazare</label>
+                            <input
+                                type="text"
+                                id="date_range"
+                                class="form-control date-filter"
+                                placeholder="Selectează perioada"
+                                autocomplete="off"
+                                value="<?= (!empty($startDate) && !empty($endDate))
+                            ? date('d.m.Y', strtotime($startDate)) . ' - ' . date('d.m.Y', strtotime($endDate))
+                            : '' ?>">
+
+                            <input type="hidden" name="start_date" id="start_date" value="<?= $startDate ?? '' ?>">
+                            <input type="hidden" name="end_date" id="end_date" value="<?= $endDate?? '' ?>">
                         </div>
                         <div class="align-self-end">
-                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa-solid fa-rotate"></i> Actualizează</button>
+                            <button type="submit" class="btn btn-sm btn-primary mb-0"><i class="fa-solid fa-rotate"></i> Actualizează</button>
                         </div>
                     </form>
                 </div>
@@ -45,17 +51,6 @@
                             <h5 class="mb-0">{{ $summary['count'] }}</h5>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card mb-4 h-100">
-                <div class="card-header pb-0">
-                    <h6 class="mb-0">Distribuție rapidă</h6>
-                    <p class="text-sm text-muted mb-0">Venituri vs. cheltuieli în intervalul selectat.</p>
-                </div>
-                <div class="card-body">
-                    <canvas id="distributionChart" height="220"></canvas>
                 </div>
             </div>
         </div>
@@ -242,5 +237,43 @@
                 }
             }
         });
+        // === DATE RANGE PICKER ===
+        const filterDate = {
+            showDropdowns: true,
+            autoUpdateInput: false,
+            minYear: 2018,
+            maxYear: <?= (int)date("Y")+5 ?>,
+            minDate: moment().add(1, 'days'),
+            locale: {
+                format: 'YYYY-MM-DD',
+                applyLabel: "Aplică",
+                cancelLabel: "Șterge",
+                customRangeLabel: "Selectează intervalul",
+                daysOfWeek: ['Du', 'Lu', 'Ma', 'Mi', 'Jo', 'Vi', 'Sâ'],
+                monthNames: ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'],
+                firstDay: 1
+            },
+            ranges: {
+                'Weekend-ul viitor': [moment().add(5, 'days'), moment().add(7, 'days')],
+                'Săptămâna aceasta': [moment().startOf('week').add(1, 'day'), moment().endOf('week').add(1, 'day')],
+                'Luna aceasta': [moment().startOf('month'), moment().endOf('month')],
+                'Luna viitoare': [moment().add(1, 'month').startOf('month'), moment().add(1, 'month').endOf('month')]
+            }
+        };
+
+        $('#date_range').daterangepicker(filterDate);
+
+        $('#date_range').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' → ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#start_date').val(picker.startDate.format('YYYY-MM-DD'));
+            $('#end_date').val(picker.endDate.format('YYYY-MM-DD'));
+            $('#error_daterange').addClass('d-none');
+        });
+
+        $('#date_range').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+            $('#start_date, #end_date').val('');
+        });
+
     </script>
 @endpush
