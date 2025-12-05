@@ -1,0 +1,125 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Company;
+use App\Models\FinancialAccount;
+use Illuminate\Database\Seeder;
+
+class FinancialAccountSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $company = Company::first() ?? Company::create([
+            'name' => 'ContaFlux Demo SRL',
+            'fiscal_code' => 'RO12345678',
+            'currency' => 'RON',
+            'fiscal_year_start' => '2025-01-01',
+            'timezone' => 'Europe/Bucharest',
+        ]);
+
+        $accounts = [
+            [
+                'code' => '101',
+                'name' => 'Casa',
+                'type' => 'asset',
+                'category' => 'cash',
+                'description' => 'Numerar în casierie',
+            ],
+            [
+                'code' => '5121',
+                'name' => 'Conturi la bănci în lei',
+                'type' => 'asset',
+                'category' => 'bank',
+                'description' => 'Disponibil în cont curent RON',
+            ],
+            [
+                'code' => '418',
+                'name' => 'Clienți facturi emise',
+                'type' => 'asset',
+                'category' => 'receivables',
+                'description' => 'Facturi de încasat de la clienți',
+            ],
+            [
+                'code' => '401',
+                'name' => 'Furnizori',
+                'type' => 'liability',
+                'category' => 'payables',
+                'description' => 'Datorii către furnizori',
+            ],
+            [
+                'code' => '408',
+                'name' => 'Furnizori facturi nesosite',
+                'type' => 'liability',
+                'category' => 'payables',
+                'description' => 'Bunuri/servicii recepționate fără factură',
+            ],
+            [
+                'code' => '419',
+                'name' => 'Clienți creditori',
+                'type' => 'liability',
+                'category' => 'advances',
+                'description' => 'Avansuri încasate de la clienți',
+            ],
+            [
+                'code' => '421',
+                'name' => 'Personal – salarii datorate',
+                'type' => 'liability',
+                'category' => 'payroll',
+                'description' => 'Salarii nete de plată către angajați',
+            ],
+            [
+                'code' => '4311',
+                'name' => 'Contribuția de asigurări sociale',
+                'type' => 'liability',
+                'category' => 'payroll',
+                'description' => 'CAS datorat pentru salarii',
+            ],
+            [
+                'code' => '4371',
+                'name' => 'Contribuția asiguratorie pentru muncă',
+                'type' => 'liability',
+                'category' => 'payroll',
+                'description' => 'CAM datorată la salarii',
+            ],
+            [
+                'code' => '4427',
+                'name' => 'TVA colectată',
+                'type' => 'liability',
+                'category' => 'taxes',
+                'description' => 'TVA colectată din livrări',
+            ],
+            [
+                'code' => '446',
+                'name' => 'Alte impozite, taxe și vărsăminte asimilate',
+                'type' => 'liability',
+                'category' => 'taxes',
+                'description' => 'Impozite și taxe de achitat către buget',
+            ],
+            [
+                'code' => '704',
+                'name' => 'Venituri din servicii prestate',
+                'type' => 'revenue',
+                'category' => 'revenue',
+                'description' => 'Venituri din servicii oferite clienților',
+            ],
+            [
+                'code' => '628',
+                'name' => 'Cheltuieli cu serviciile executate de terți',
+                'type' => 'expense',
+                'category' => 'expense',
+                'description' => 'Marketing, licențe software și alte servicii',
+            ],
+        ];
+
+        foreach ($accounts as $account) {
+            FinancialAccount::updateOrCreate(
+                [
+                    'company_id' => $company->id,
+                    'code' => $account['code'],
+                ],
+                array_merge($account, ['company_id' => $company->id]),
+            );
+        }
+    }
+}
