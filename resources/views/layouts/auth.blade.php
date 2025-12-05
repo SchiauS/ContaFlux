@@ -20,6 +20,9 @@
             <span class="mask bg-gradient-primary opacity-6"></span>
             <div class="container my-auto">
                 <div class="row">
+                    <div class="text-white text-center mb-4">
+                       <img src="{{asset('logo-RAU-ro-1.png')}}">
+                    </div>
                     <div class="col-lg-5 col-md-7 mx-auto">
                         <div class="card z-index-0 fadeIn3 fadeInBottom shadow-lg border-0">
                             <div class="card-header pb-0 text-left bg-transparent">
