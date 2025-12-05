@@ -61,7 +61,6 @@
                             <tr>
                                 <th>Cod</th>
                                 <th>Nume cont</th>
-                                <th>Companie</th>
                                 <th>Tip</th>
                                 <th>Categorie</th>
                                 <th>Activ</th>
@@ -76,7 +75,6 @@
                                         <div class="fw-semibold">{{ $account->name }}</div>
                                         <div class="text-muted text-sm">{{ $account->description ?? '—' }}</div>
                                     </td>
-                                    <td class="text-sm">{{ optional($account->company)->name ?? '—' }}</td>
                                     <td class="text-sm text-uppercase">{{ $account->type ?? 'N/A' }}</td>
                                     <td class="text-sm">{{ $account->category ?? '—' }}</td>
                                     <td>

@@ -6,7 +6,7 @@
 @section('content')
     <form method="POST" action="{{ route('login') }}" class="text-start">
         @csrf
-        <div class="input-group input-group-outline my-3">
+        <div class="form-group my-3">
             <label class="form-label">Email</label>
             <input type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
         </div>
@@ -14,7 +14,7 @@
         <small class="text-danger d-block mb-2">{{ $message }}</small>
         @enderror
 
-        <div class="input-group input-group-outline mb-3">
+        <div class="form-group mb-3">
             <label class="form-label">Parolă</label>
             <input type="password" class="form-control" name="password" required>
         </div>

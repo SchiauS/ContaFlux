@@ -11,7 +11,7 @@
                 <h6 class="text-uppercase text-body text-xs font-weight-bolder">Date personale</h6>
             </div>
             <div class="col-12">
-                <div class="input-group input-group-outline my-3">
+                <div class="form-group my-3">
                     <label class="form-label">Nume complet</label>
                     <input type="text" class="form-control" name="name" value="{{ old('name') }}" required>
                 </div>
@@ -20,7 +20,7 @@
                 @enderror
             </div>
             <div class="col-12">
-                <div class="input-group input-group-outline mb-3">
+                <div class="form-group mb-3">
                     <label class="form-label">Email</label>
                     <input type="email" class="form-control" name="email" value="{{ old('email') }}" required>
                 </div>
@@ -29,7 +29,7 @@
                 @enderror
             </div>
             <div class="col-md-6">
-                <div class="input-group input-group-outline mb-3">
+                <div class="form-group mb-3">
                     <label class="form-label">Parolă</label>
                     <input type="password" class="form-control" name="password" required>
                 </div>

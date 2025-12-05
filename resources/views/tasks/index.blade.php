@@ -78,7 +78,6 @@
                         <thead>
                         <tr>
                             <th>Task</th>
-                            <th>Companie</th>
                             <th>Responsabil</th>
                             <th>Prioritate</th>
                             <th>Status</th>
@@ -92,20 +91,19 @@
                                     <div class="fw-semibold">{{ $task->title }}</div>
                                     <div class="text-muted text-sm">{{ $task->description ?? '—' }}</div>
                                 </td>
-                                <td class="text-sm">{{ optional($task->company)->name ?? '—' }}</td>
                                 <td class="text-sm">{{ optional($task->user)->name ?? 'Nespecificat' }}</td>
                                 <td>
                                     <span class="badge bg-gradient-info text-uppercase">{{ $task->priority ?? 'N/A' }}</span>
                                 </td>
                                 <td>
-                                    <span class="badge 
+                                    <span class="badge
                                         @class([
                                             'bg-gradient-success' => $task->status === 'done',
                                             'bg-gradient-warning' => $task->status === 'in_progress',
                                             'bg-gradient-secondary' => $task->status === 'open',
                                             'bg-gradient-secondary' => empty($task->status)
                                     ])">
-                                        {{ ucfirst($task->status ?? 'open') }}
+                                        {{ ucfirst($task->status ?? 'open') }} {{$task->status }}
                                     </span>
                                 </td>
                                 <td class="text-sm">{{ optional($task->due_date)->format('d M Y') ?? '—' }}</td>

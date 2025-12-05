@@ -19,6 +19,9 @@
         .modal {
             z-index: 1450 !important;
         }
+        .sidenav {
+            z-index: 999!important;
+        }
     </style>
     @stack('styles')
 </head>

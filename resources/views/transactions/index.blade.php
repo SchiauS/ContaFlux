@@ -68,7 +68,6 @@
                         <thead>
                         <tr>
                             <th>Descriere</th>
-                            <th>Companie</th>
                             <th>Cont</th>
                             <th>Direcție</th>
                             <th>Suma</th>
@@ -82,7 +81,6 @@
                                     <div class="fw-semibold">{{ $transaction->description ?? '—' }}</div>
                                     <div class="text-muted text-sm">{{ $transaction->counterparty ?? 'N/A' }}</div>
                                 </td>
-                                <td class="text-sm">{{ optional($transaction->company)->name ?? '—' }}</td>
                                 <td class="text-sm">{{ optional($transaction->account)->code ?? '—' }}</td>
                                 <td>
                                     <span class="badge {{ $transaction->direction === 'credit' ? 'bg-gradient-success' : 'bg-gradient-danger' }}">

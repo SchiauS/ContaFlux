@@ -148,7 +148,6 @@
                     <table class="table align-items-center mb-0">
                         <thead>
                         <tr>
-                            <th>Companie</th>
                             <th>Descriere</th>
                             <th>Direcție</th>
                             <th>Suma</th>
@@ -158,7 +157,6 @@
                         <tbody>
                         @forelse($recentTransactions as $transaction)
                             <tr>
-                                <td>{{ optional($transaction->company)->name ?? 'N/A' }}</td>
                                 <td>{{ $transaction->description ?? '-' }}</td>
                                 <td>
                                     <span class="badge {{ $transaction->direction === 'credit' ? 'bg-gradient-success' : 'bg-gradient-danger' }}">
@@ -180,6 +178,8 @@
         </div>
     </div>
 @endsection
+@push('styles')
+@endpush
 
 @push('scripts')
     <script src="{{ asset('argon/js/plugins/chartjs.min.js') }}"></script>
