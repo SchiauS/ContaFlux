@@ -9,7 +9,7 @@
                 <div class="card-header bg-white d-flex flex-column flex-md-row align-items-md-center justify-content-between">
                     <div>
                         <h5 class="mb-0">Task-uri</h5>
-                        <span class="text-sm text-muted">Companie: {{ $company->name }}</span>
+                        <span class="text-sm text-muted">Companie: {{ optional($company)->name ?? 'Toate' }}</span>
                     </div>
                     <button class="btn btn-primary btn-sm mt-3 mt-md-0" type="button" data-bs-toggle="collapse" data-bs-target="#createTaskForm">
                         <i class="fa-solid fa-plus me-1"></i> Adaugă task
