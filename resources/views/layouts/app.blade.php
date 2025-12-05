@@ -12,6 +12,14 @@
     <link href="{{ asset('argon/css/nucleo-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('argon/css/nucleo-svg.css') }}" rel="stylesheet">
     <link href="{{ asset('argon/css/argon-dashboard.min.css') }}" rel="stylesheet">
+    <style>
+        .modal-backdrop {
+            z-index: 1400 !important;
+        }
+        .modal {
+            z-index: 1450 !important;
+        }
+    </style>
     @stack('styles')
 </head>
 <body class="g-sidenav-show bg-gray-100">
