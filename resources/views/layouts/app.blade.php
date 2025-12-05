@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" integrity="sha512-1f5T5nYeD1yfknhk+NCA8DmF5asJ5AZt0pOEtpJR/YWZLxE+nobVhtSGcVwqDAVBBusfvEvFpc1dV0C2Zaw2xg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" referrerpolicy="no-referrer" />
     <link href="{{ asset('argon/css/nucleo-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('argon/css/nucleo-svg.css') }}" rel="stylesheet">
     <link href="{{ asset('argon/css/argon-dashboard.min.css') }}" rel="stylesheet">
@@ -131,7 +131,7 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-3fh7xZt+xiqf+4iZHPxemwF/6Ckxzgv2Fne5DE5pSg0=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="{{ asset('argon/js/core/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('argon/js/plugins/perfect-scrollbar.min.js') }}"></script>
 <script src="{{ asset('argon/js/plugins/smooth-scrollbar.min.js') }}"></script>

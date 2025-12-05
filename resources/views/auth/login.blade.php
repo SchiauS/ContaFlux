@@ -1,28 +1,35 @@
 @extends('layouts.auth')
 
-@section('title', 'Autentificare')
+@section('card-title', 'Bine ai revenit!')
+@section('card-subtitle', 'Introdu datele de autentificare pentru a accesa panoul ContaFlux.')
 
 @section('content')
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" class="text-start">
         @csrf
-        <div class="mb-3">
+        <div class="input-group input-group-outline my-3">
             <label class="form-label">Email</label>
             <input type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
-            @error('email')
-            <small class="text-danger">{{ $message }}</small>
-            @enderror
         </div>
-        <div class="mb-3">
+        @error('email')
+        <small class="text-danger d-block mb-2">{{ $message }}</small>
+        @enderror
+
+        <div class="input-group input-group-outline mb-3">
             <label class="form-label">Parolă</label>
             <input type="password" class="form-control" name="password" required>
         </div>
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" name="remember" id="remember">
-            <label class="form-check-label" for="remember">Ține-mă minte</label>
+
+        <div class="form-check form-switch d-flex align-items-center mb-3">
+            <input class="form-check-input" type="checkbox" id="remember" name="remember">
+            <label class="form-check-label ms-2" for="remember">Ține-mă minte</label>
         </div>
-        <button type="submit" class="btn btn-primary w-100">Intră în cont</button>
+
+        <div class="text-center">
+            <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Autentificare</button>
+        </div>
+        <p class="mt-4 text-sm text-center">
+            Nu ai cont?
+            <a href="{{ route('register') }}" class="text-primary text-gradient font-weight-bold">Înregistrează-te</a>
+        </p>
     </form>
-    <div class="text-center mt-3">
-        <small>Nu ai cont? <a href="{{ route('register') }}">Înregistrează-te</a></small>
-    </div>
 @endsection
