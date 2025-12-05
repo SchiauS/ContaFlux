@@ -33,7 +33,7 @@
     <div class="sidenav-header">
         <a class="navbar-brand m-0 d-flex align-items-center" href="{{ route('dashboard') }}">
             <img src="{{asset('favicon.svg')}}" class="mr-2" height="32">
-            <h5 class="font-weight-bolder text-dark mb-0 mr-1">Conta</h5>
+            <h5 class="font-weight-bolder text-dark mb-0" style="margin-left: 3px;">Conta</h5>
             <h5 class="font-weight-bolder text-primary mb-0">Flux</h5>
         </a>
     </div>
