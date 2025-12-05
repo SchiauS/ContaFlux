@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,11 +16,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $company = Company::firstOrCreate(
+            ['name' => 'ContaFlux Demo SRL'],
+            [
+                'fiscal_code' => 'RO12345678',
+                'currency' => 'RON',
+                'fiscal_year_start' => '2025-01-01',
+                'timezone' => 'Europe/Bucharest',
+            ],
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => bcrypt('password'),
+                'company_id' => $company->id,
+            ],
+        );
+
+        $this->call([
+            FinancialAccountSeeder::class,
+            FinancialTransactionSeeder::class,
+            TaskSeeder::class,
         ]);
     }
 }
