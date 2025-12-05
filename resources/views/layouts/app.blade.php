@@ -180,6 +180,7 @@
 <script src="{{ asset('argon/js/plugins/perfect-scrollbar.min.js') }}"></script>
 <script src="{{ asset('argon/js/plugins/smooth-scrollbar.min.js') }}"></script>
 <script src="{{ asset('argon/js/argon-dashboard.min.js') }}"></script>
+<script src="{{ asset('argon/js/moment.js') }}"></script>
 <script src="{{ asset('argon/js/daterangepicker.js') }}"></script>
 <script>
     if (window.$) {
