@@ -99,9 +99,9 @@ class FinancialTransactionController extends Controller
         return redirect()->route('transactions.index')->with('status', 'Tranzacția a fost ștearsă.');
     }
 
-    private function authorizeCompany(int $companyId): void
+    private function authorizeCompany(?int $companyId): void
     {
-        if ($companyId !== auth()->user()->company_id) {
+        if ($companyId === null || $companyId !== auth()->user()->company_id) {
             abort(403, 'Nu ai acces la această tranzacție.');
         }
     }
