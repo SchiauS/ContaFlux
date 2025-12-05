@@ -65,6 +65,7 @@
                                 <th>Categorie</th>
                                 <th>Activ</th>
                                 <th>Creat la</th>
+                                <th class="text-end">Acțiuni</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -83,6 +84,64 @@
                                         </span>
                                     </td>
                                     <td class="text-sm text-muted">{{ optional($account->created_at)->format('d M Y') ?? '—' }}</td>
+                                    <td class="text-end">
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#editAccount-{{ $account->id }}">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <form method="POST" action="{{ route('accounts.destroy', $account) }}"
+                                                  onsubmit="return confirm('Sigur vrei să ștergi acest cont?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-outline-danger" type="submit">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="editAccount-{{ $account->id }}" class="collapse bg-light">
+                                    <td colspan="7" class="p-4">
+                                        <form method="POST" action="{{ route('accounts.update', $account) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="row g-3">
+                                                <div class="col-md-4">
+                                                    <label class="form-label text-sm">Cod</label>
+                                                    <input type="text" class="form-control" name="code" value="{{ $account->code }}" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label text-sm">Nume</label>
+                                                    <input type="text" class="form-control" name="name" value="{{ $account->name }}" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label text-sm">Tip</label>
+                                                    <input type="text" class="form-control" name="type" value="{{ $account->type }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label text-sm">Categorie</label>
+                                                    <input type="text" class="form-control" name="category" value="{{ $account->category }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label text-sm">Activ</label>
+                                                    <select name="is_active" class="form-select">
+                                                        <option value="1" @selected($account->is_active)>Da</option>
+                                                        <option value="0" @selected(! $account->is_active)>Nu</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label text-sm">Descriere</label>
+                                                    <textarea class="form-control" name="description" rows="2">{{ $account->description }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3 d-flex justify-content-end">
+                                                <button class="btn btn-success" type="submit">
+                                                    <i class="fa-solid fa-floppy-disk me-1"></i> Actualizează
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>

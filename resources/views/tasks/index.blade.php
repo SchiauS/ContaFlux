@@ -82,6 +82,7 @@
                             <th>Prioritate</th>
                             <th>Status</th>
                             <th>Termen</th>
+                            <th class="text-end">Acțiuni</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -106,6 +107,65 @@
                                     </span>
                                 </td>
                                 <td class="text-sm">{{ optional($task->due_date)->format('d M Y') ?? '—' }}</td>
+                                <td class="text-end">
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#editTask-{{ $task->id }}">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                        <form method="POST" action="{{ route('tasks.destroy', $task) }}"
+                                              onsubmit="return confirm('Sigur vrei să ștergi acest task?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-sm btn-outline-danger" type="submit">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="editTask-{{ $task->id }}" class="collapse bg-light">
+                                <td colspan="6" class="p-4">
+                                    <form method="POST" action="{{ route('tasks.update', $task) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label text-sm">Titlu</label>
+                                                <input type="text" class="form-control" name="title" value="{{ $task->title }}" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-sm">Responsabil (ID user)</label>
+                                                <input type="number" class="form-control" name="user_id" value="{{ $task->user_id }}" disabled>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-sm">Status</label>
+                                                <select name="status" class="form-select">
+                                                    <option value="open" @selected($task->status === 'open')>Open</option>
+                                                    <option value="in_progress" @selected($task->status === 'in_progress')>In progress</option>
+                                                    <option value="done" @selected($task->status === 'done')>Done</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-sm">Prioritate</label>
+                                                <input type="text" class="form-control" name="priority" value="{{ $task->priority }}">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-sm">Termen</label>
+                                                <input type="date" class="form-control" name="due_date" value="{{ optional($task->due_date)->format('Y-m-d') }}">
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label text-sm">Descriere</label>
+                                                <textarea class="form-control" name="description" rows="2">{{ $task->description }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 d-flex justify-content-end">
+                                            <button class="btn btn-success" type="submit">
+                                                <i class="fa-solid fa-floppy-disk me-1"></i> Actualizează
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
                             </tr>
                         @empty
                             <tr>
