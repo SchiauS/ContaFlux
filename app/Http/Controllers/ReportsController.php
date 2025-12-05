@@ -17,8 +17,13 @@ class ReportsController extends Controller
         $start = $request->input('start_date');
         $end = $request->input('end_date');
 
-        $startDate = $start ? Carbon::parse($start)->startOfDay() : now()->subDays(90)->startOfDay();
-        $endDate = $end ? Carbon::parse($end)->endOfDay() : now()->endOfDay();
+        if (!$start && !$end) {
+            $startDate = now()->startOfYear();
+            $endDate = now()->endOfYear();
+        } else {
+            $startDate = $start ? Carbon::parse($start)->startOfDay() : now()->subDays(90)->startOfDay();
+            $endDate = $end ? Carbon::parse($end)->endOfDay() : now()->endOfDay();
+        }
 
         if ($startDate->greaterThan($endDate)) {
             [$startDate, $endDate] = [$endDate->copy()->startOfDay(), $startDate->copy()->endOfDay()];

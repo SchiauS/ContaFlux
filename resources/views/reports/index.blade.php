@@ -20,12 +20,10 @@
                                 class="form-control date-filter"
                                 placeholder="Selectează perioada"
                                 autocomplete="off"
-                                value="<?= (!empty($startDate) && !empty($endDate))
-                            ? date('d.m.Y', strtotime($startDate)) . ' - ' . date('d.m.Y', strtotime($endDate))
-                            : '' ?>">
+                                value="{{ $startDate && $endDate ? \Carbon\Carbon::parse($startDate)->format('d.m.Y').' - '.\Carbon\Carbon::parse($endDate)->format('d.m.Y') : '' }}">
 
-                            <input type="hidden" name="start_date" id="start_date" value="<?= $startDate ?? '' ?>">
-                            <input type="hidden" name="end_date" id="end_date" value="<?= $endDate?? '' ?>">
+                            <input type="hidden" name="start_date" id="start_date" value="{{ $startDate }}">
+                            <input type="hidden" name="end_date" id="end_date" value="{{ $endDate }}">
                         </div>
                         <div class="align-self-end">
                             <button type="submit" class="btn btn-sm btn-primary mb-0"><i class="fa-solid fa-rotate"></i> Actualizează</button>
@@ -257,9 +255,17 @@
                 'Weekend-ul viitor': [moment().add(5, 'days'), moment().add(7, 'days')],
                 'Săptămâna aceasta': [moment().startOf('week').add(1, 'day'), moment().endOf('week').add(1, 'day')],
                 'Luna aceasta': [moment().startOf('month'), moment().endOf('month')],
-                'Luna viitoare': [moment().add(1, 'month').startOf('month'), moment().add(1, 'month').endOf('month')]
+                'Luna viitoare': [moment().add(1, 'month').startOf('month'), moment().add(1, 'month').endOf('month')],
+                'Anul acesta': [moment().startOf('year'), moment().endOf('year')]
             }
         };
+
+        const currentStart = "{{ $startDate }}";
+        const currentEnd = "{{ $endDate }}";
+        if (currentStart && currentEnd) {
+            filterDate.startDate = moment(currentStart, 'YYYY-MM-DD');
+            filterDate.endDate = moment(currentEnd, 'YYYY-MM-DD');
+        }
 
         $('#date_range').daterangepicker(filterDate);
 
