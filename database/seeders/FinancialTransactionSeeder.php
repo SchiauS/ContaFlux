@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Company;
 use App\Models\FinancialAccount;
 use App\Models\FinancialTransaction;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class FinancialTransactionSeeder extends Seeder
@@ -12,8 +13,8 @@ class FinancialTransactionSeeder extends Seeder
     public function run(): void
     {
         $company = Company::first() ?? Company::create([
-            'name' => 'ContaFlux Demo SRL',
-            'fiscal_code' => 'RO12345678',
+            'name' => 'Nebula Dev Studio SRL',
+            'fiscal_code' => 'RO98765432',
             'currency' => 'RON',
             'fiscal_year_start' => '2025-01-01',
             'timezone' => 'Europe/Bucharest',
@@ -23,56 +24,139 @@ class FinancialTransactionSeeder extends Seeder
             ->get()
             ->keyBy('code');
 
+        $currentDate = Carbon::now('Europe/Bucharest');
+        $year = $currentDate->year;
+
         $transactions = [
             [
                 'financial_account_code' => '101',
                 'counterparty' => 'Client numerar',
-                'description' => 'Încasare numerar servicii de consultanță',
+                'description' => 'Încasare numerar pentru consultanță startup',
                 'direction' => 'debit',
-                'amount' => 2500.00,
+                'amount' => 3100.00,
                 'currency' => 'RON',
                 'tax_rate' => 0,
-                'occurred_at' => '2025-01-10 09:30:00',
+                'occurred_at' => Carbon::create($year, 1, 10, 9, 30)->toDateTimeString(),
             ],
             [
                 'financial_account_code' => '5121',
                 'counterparty' => 'Banca Comercială',
-                'description' => 'Încasare factură #CFX-102 prin bancă',
+                'description' => 'Încasare factură #NDS-102 prin bancă',
                 'direction' => 'debit',
-                'amount' => 7800.00,
+                'amount' => 9200.00,
                 'currency' => 'RON',
                 'tax_rate' => 0,
-                'occurred_at' => '2025-01-18 12:10:00',
+                'occurred_at' => Carbon::create($year, 2, 14, 12, 10)->toDateTimeString(),
             ],
             [
                 'financial_account_code' => '704',
                 'counterparty' => 'Client Enterprise',
-                'description' => 'Venituri din abonament lunar',
+                'description' => 'Venituri din abonament lunar dezvoltare și mentenanță',
                 'direction' => 'credit',
-                'amount' => 8200.00,
+                'amount' => 10500.00,
                 'currency' => 'RON',
                 'tax_rate' => 19.0,
-                'occurred_at' => '2025-01-18 12:10:00',
+                'occurred_at' => Carbon::create($year, 2, 14, 12, 10)->toDateTimeString(),
+            ],
+            [
+                'financial_account_code' => '419',
+                'counterparty' => 'Client Enterprise',
+                'description' => 'Facturare în avans pentru sprint Q2',
+                'direction' => 'credit',
+                'amount' => 18000.00,
+                'currency' => 'RON',
+                'tax_rate' => 19.0,
+                'occurred_at' => Carbon::create($year, 3, 5, 10, 0)->toDateTimeString(),
+            ],
+            [
+                'financial_account_code' => '418',
+                'counterparty' => 'Client Enterprise',
+                'description' => 'Recunoaștere creanță pentru livrare Q1',
+                'direction' => 'debit',
+                'amount' => 14500.00,
+                'currency' => 'RON',
+                'tax_rate' => 19.0,
+                'occurred_at' => Carbon::create($year, 3, 28, 16, 15)->toDateTimeString(),
             ],
             [
                 'financial_account_code' => '628',
                 'counterparty' => 'Furnizor marketing',
-                'description' => 'Campanie ads trimestru I',
+                'description' => 'Campanie ads trimestru II',
                 'direction' => 'debit',
-                'amount' => 3200.00,
+                'amount' => 3500.00,
                 'currency' => 'RON',
                 'tax_rate' => 19.0,
-                'occurred_at' => '2025-01-22 15:45:00',
+                'occurred_at' => Carbon::create($year, 4, 12, 15, 45)->toDateTimeString(),
             ],
             [
                 'financial_account_code' => '401',
                 'counterparty' => 'Furnizor licențe',
-                'description' => 'Factura licențe software ianuarie',
+                'description' => 'Factura licențe software trimestrul II',
                 'direction' => 'credit',
-                'amount' => 1450.00,
+                'amount' => 2100.00,
                 'currency' => 'RON',
                 'tax_rate' => 19.0,
-                'occurred_at' => '2025-01-23 08:20:00',
+                'occurred_at' => Carbon::create($year, 4, 20, 8, 20)->toDateTimeString(),
+            ],
+            [
+                'financial_account_code' => '231',
+                'counterparty' => 'Retail IT',
+                'description' => 'Avans achiziție laptopuri noi',
+                'direction' => 'debit',
+                'amount' => 12400.00,
+                'currency' => 'RON',
+                'tax_rate' => 19.0,
+                'occurred_at' => Carbon::create($year, $currentDate->month, 3, 11, 30)->toDateTimeString(),
+            ],
+            [
+                'financial_account_code' => '421',
+                'counterparty' => 'Angajați Nebula Dev Studio',
+                'description' => 'Înregistrare salarii nete',
+                'direction' => 'credit',
+                'amount' => 48000.00,
+                'currency' => 'RON',
+                'tax_rate' => 0,
+                'occurred_at' => Carbon::create($year, $currentDate->month, 25, 17, 0)->toDateTimeString(),
+            ],
+            [
+                'financial_account_code' => '431',
+                'counterparty' => 'Casa de Pensii',
+                'description' => 'Contribuții CAS aferente salariilor',
+                'direction' => 'credit',
+                'amount' => 12000.00,
+                'currency' => 'RON',
+                'tax_rate' => 0,
+                'occurred_at' => Carbon::create($year, $currentDate->month, 25, 17, 5)->toDateTimeString(),
+            ],
+            [
+                'financial_account_code' => '5121',
+                'counterparty' => 'Banca Comercială',
+                'description' => 'Încasare finală proiect enterprise',
+                'direction' => 'debit',
+                'amount' => 21500.00,
+                'currency' => 'RON',
+                'tax_rate' => 0,
+                'occurred_at' => Carbon::create($year, 9, 8, 10, 50)->toDateTimeString(),
+            ],
+            [
+                'financial_account_code' => '704',
+                'counterparty' => 'Client Enterprise',
+                'description' => 'Venituri din livrare milestone final',
+                'direction' => 'credit',
+                'amount' => 21500.00,
+                'currency' => 'RON',
+                'tax_rate' => 19.0,
+                'occurred_at' => Carbon::create($year, 9, 8, 10, 50)->toDateTimeString(),
+            ],
+            [
+                'financial_account_code' => '101',
+                'counterparty' => 'Client numerar',
+                'description' => 'Încasare avans contract suport',
+                'direction' => 'debit',
+                'amount' => 1800.00,
+                'currency' => 'RON',
+                'tax_rate' => 0,
+                'occurred_at' => Carbon::create($year, 11, 2, 9, 5)->toDateTimeString(),
             ],
         ];
 
