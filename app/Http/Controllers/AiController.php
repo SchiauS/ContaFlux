@@ -28,8 +28,10 @@ class AiController extends Controller
 
         $companyId = $request->user()->company_id;
 
-        $session = $data['session_id']
-            ? AiSession::where('company_id', $companyId)->findOrFail($data['session_id'])
+        $sessionId = $data['session_id'] ?? null;
+
+        $session = $sessionId
+            ? AiSession::where('company_id', $companyId)->findOrFail($sessionId)
             : AiSession::create([
                 'company_id' => $companyId,
                 'user_id' => $request->user()?->id,
