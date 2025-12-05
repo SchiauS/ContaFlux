@@ -78,13 +78,45 @@ class OpenAIService
                 ->throw()
                 ->json();
         } catch (RequestException $exception) {
-            if ($exception->response?->status() === 429) {
+            $response = $exception->response;
+
+            if ($response?->status() === 429) {
+                $apiMessage = data_get($response->json(), 'error.message');
+
+                Log::warning('OpenAI rate limit hit', [
+                    'message' => $apiMessage,
+                    'headers' => [
+                        'limit_requests' => $response->header('x-ratelimit-limit-requests'),
+                        'remaining_requests' => $response->header('x-ratelimit-remaining-requests'),
+                        'reset_requests' => $response->header('x-ratelimit-reset-requests'),
+                        'limit_tokens' => $response->header('x-ratelimit-limit-tokens'),
+                        'remaining_tokens' => $response->header('x-ratelimit-remaining-tokens'),
+                        'reset_tokens' => $response->header('x-ratelimit-reset-tokens'),
+                        'retry_after' => $response->header('retry-after'),
+                    ],
+                ]);
+
+                $message = 'Serviciul AI a atins o limita temporara la furnizor. '
+                    . ($response->header('retry-after')
+                        ? 'Incercati din nou dupa ' . $response->header('retry-after') . ' secunde.'
+                        : 'Incercati din nou in scurt timp.');
+
+                if (! empty($apiMessage)) {
+                    $message .= ' Mesaj API: ' . $apiMessage;
+                }
+
                 throw new HttpResponseException(response()->json([
-                    'message' => 'Serviciul AI nu este disponibil momentan (limita de utilizare a fost atinsa). Incercati din nou mai tarziu.',
+                    'message' => $message,
                 ], 429));
             }
 
-            throw $exception;
+            $apiMessage = data_get($response?->json(), 'error.message')
+                ?? $response?->body()
+                ?? $exception->getMessage();
+
+            throw new HttpResponseException(response()->json([
+                'message' => 'Serviciul AI a returnat o eroare: ' . $apiMessage,
+            ], $response?->status() ?? 500));
         }
 
         Log::info('OpenAI request', [
