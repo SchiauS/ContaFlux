@@ -33,7 +33,7 @@
     <div class="sidenav-header">
         <a class="navbar-brand m-0 d-flex align-items-center" href="{{ route('dashboard') }}">
             <img src="{{asset('favicon.svg')}}" class="mr-2" height="32">
-            <h5 class="font-weight-bolder text-dark mb-0" style="margin-left: 3px;">Conta</h5>
+            <h5 class="font-weight-bolder text-dark mb-0" style="margin-left: 11px;">Conta</h5>
             <h5 class="font-weight-bolder text-primary mb-0">Flux</h5>
         </a>
     </div>
@@ -115,6 +115,19 @@
             </div>
         @endif
         @yield('content')
+            <footer class="footer pt-3">
+                <div class="container-fluid">
+                    <div class="row align-items-center justify-content-lg-between">
+                        <div class="col-lg-6 mb-lg-0 mb-4">
+                            <div class="copyright text-center text-sm text-muted text-lg-start">
+                                © Schiau Sebastian-Adrian - <script>
+                                    document.write(new Date().getFullYear())
+                                </script>. All rights reserved.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
     </div>
 </main>
 
