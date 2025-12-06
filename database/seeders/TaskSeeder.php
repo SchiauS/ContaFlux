@@ -4,19 +4,31 @@ namespace Database\Seeders;
 
 use App\Models\Company;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class TaskSeeder extends Seeder
 {
     public function run(): void
     {
-        $company = Company::first() ?? Company::create([
-            'name' => 'ContaFlux Demo SRL',
-            'fiscal_code' => 'RO12345678',
-            'currency' => 'RON',
-            'fiscal_year_start' => '2025-01-01',
-            'timezone' => 'Europe/Bucharest',
-        ]);
+        $company = Company::firstOrCreate(
+            ['name' => 'Nebula Dev Studio SRL'],
+            [
+                'fiscal_code' => 'RO98765432',
+                'currency' => 'RON',
+                'fiscal_year_start' => '2025-01-01',
+                'timezone' => 'Europe/Bucharest',
+            ],
+        );
+
+        $user = User::firstOrCreate(
+            ['email' => 'schiau.m.sebastianadrian25@stud.rau.ro'],
+            [
+                'name' => 'Schiau Sebastian-Adrian',
+                'password' => bcrypt('password'),
+                'company_id' => $company->id,
+            ],
+        );
 
         $tasks = [
             [
@@ -57,7 +69,7 @@ class TaskSeeder extends Seeder
                 ],
                 array_merge($task, [
                     'company_id' => $company->id,
-                    'user_id' => 1,
+                    'user_id' => $user->id,
                 ]),
             );
         }
