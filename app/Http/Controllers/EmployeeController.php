@@ -71,7 +71,13 @@ class EmployeeController extends Controller
             'status' => ['required', Rule::in(['active', 'terminated'])],
         ]);
 
-        $employee->update($validated);
+        $employee->fill($validated);
+
+        if (! $employee->isDirty()) {
+            return back()->with('status', 'Nu au fost efectuate modificări.');
+        }
+
+        $employee->save();
 
         return back()->with('status', 'Datele angajatului au fost actualizate.');
     }

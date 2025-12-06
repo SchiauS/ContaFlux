@@ -67,7 +67,20 @@ class FinancialAccountController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $financialAccount->update($data);
+        $financialAccount->fill($data);
+
+        if (! $financialAccount->isDirty()) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Nu există modificări de salvat.',
+                    'account' => $financialAccount,
+                ]);
+            }
+
+            return redirect()->route('accounts.index')->with('status', 'Nu au fost efectuate modificări.');
+        }
+
+        $financialAccount->save();
 
         if ($request->wantsJson()) {
             return response()->json($financialAccount);

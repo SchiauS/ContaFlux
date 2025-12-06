@@ -44,7 +44,20 @@ class CompanyController extends Controller
             $data['settings'] = array_merge($company->settings ?? [], $data['settings']);
         }
 
-        $company->update($data);
+        $company->fill($data);
+
+        if (! $company->isDirty()) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Nu există modificări de salvat.',
+                    'company' => $company,
+                ]);
+            }
+
+            return redirect()->route('companies.index')->with('status', 'Nu au fost efectuate modificări.');
+        }
+
+        $company->save();
 
         if ($request->wantsJson()) {
             return response()->json($company);

@@ -78,7 +78,20 @@ class FinancialTransactionController extends Controller
             'metadata' => 'array',
         ]);
 
-        $financialTransaction->update($data);
+        $financialTransaction->fill($data);
+
+        if (! $financialTransaction->isDirty()) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Nu există modificări de salvat.',
+                    'transaction' => $financialTransaction->load(['account', 'company']),
+                ]);
+            }
+
+            return redirect()->route('transactions.index')->with('status', 'Nu au fost efectuate modificări.');
+        }
+
+        $financialTransaction->save();
 
         if ($request->wantsJson()) {
             return response()->json($financialTransaction->load(['account', 'company']));
