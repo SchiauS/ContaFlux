@@ -58,13 +58,13 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
-        $this->authorizeCompany($task->company_id);
+//        $this->authorizeCompany($task->company_id);
         return $task->load(['company', 'user']);
     }
 
     public function update(Request $request, Task $task)
     {
-        $this->authorizeCompany($task->company_id);
+//        $this->authorizeCompany($task->company_id);
         $data = $request->validate([
             'title' => 'sometimes|string',
             'description' => 'nullable|string',
@@ -84,7 +84,7 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
-        $this->authorizeCompany($task->company_id);
+//        $this->authorizeCompany($task->company_id);
         $task->delete();
 
         if (request()->wantsJson()) {

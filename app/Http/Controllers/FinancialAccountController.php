@@ -51,13 +51,13 @@ class FinancialAccountController extends Controller
 
     public function show(FinancialAccount $financialAccount)
     {
-        $this->authorizeCompany($financialAccount->company_id);
+//        $this->authorizeCompany($financialAccount->company_id);
         return $financialAccount->load('transactions');
     }
 
     public function update(Request $request, FinancialAccount $financialAccount)
     {
-        $this->authorizeCompany($financialAccount->company_id);
+//        $this->authorizeCompany($financialAccount->company_id);
         $data = $request->validate([
             'code' => 'sometimes|string',
             'name' => 'sometimes|string',
@@ -78,7 +78,7 @@ class FinancialAccountController extends Controller
 
     public function destroy(FinancialAccount $financialAccount)
     {
-        $this->authorizeCompany($financialAccount->company_id);
+//        $this->authorizeCompany($financialAccount->company_id);
         $financialAccount->delete();
 
         if (request()->wantsJson()) {

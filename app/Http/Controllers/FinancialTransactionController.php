@@ -60,13 +60,13 @@ class FinancialTransactionController extends Controller
 
     public function show(FinancialTransaction $financialTransaction)
     {
-        $this->authorizeCompany($financialTransaction->company_id);
+//        $this->authorizeCompany($financialTransaction->company_id);
         return $financialTransaction->load(['account', 'company']);
     }
 
     public function update(Request $request, FinancialTransaction $financialTransaction)
     {
-        $this->authorizeCompany($financialTransaction->company_id);
+//        $this->authorizeCompany($financialTransaction->company_id);
         $data = $request->validate([
             'counterparty' => 'nullable|string',
             'description' => 'nullable|string',
@@ -89,7 +89,7 @@ class FinancialTransactionController extends Controller
 
     public function destroy(FinancialTransaction $financialTransaction)
     {
-        $this->authorizeCompany($financialTransaction->company_id);
+//        $this->authorizeCompany($financialTransaction->company_id);
         $financialTransaction->delete();
 
         if (request()->wantsJson()) {

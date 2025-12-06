@@ -16,13 +16,7 @@ class EmployeeSeeder extends Seeder
 {
     public function run(): void
     {
-        $company = Company::first() ?? Company::create([
-            'name' => 'Nebula Dev Studio SRL',
-            'fiscal_code' => 'RO98765432',
-            'currency' => 'RON',
-            'fiscal_year_start' => '2025-01-01',
-            'timezone' => 'Europe/Bucharest',
-        ]);
+        $company = Company::first();
 
         $employees = [
             [

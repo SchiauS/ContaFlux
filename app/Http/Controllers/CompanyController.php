@@ -21,9 +21,9 @@ class CompanyController extends Controller
 
     public function update(Request $request, Company $company)
     {
-        if ($company->id !== $request->user()->company_id) {
-            abort(403, 'Nu ai acces la această companie.');
-        }
+//        if ($company->id !== $request->user()->company_id) {
+//            abort(403, 'Nu ai acces la această companie.');
+//        }
 
         $data = $request->validate([
             'name' => 'sometimes|string',
