@@ -36,10 +36,10 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call([
-//            FinancialAccountSeeder::class,
-//            FinancialTransactionSeeder::class,
-//            TaskSeeder::class,
+            FinancialAccountSeeder::class,
             EmployeeSeeder::class,
+            FinancialTransactionSeeder::class,
+//            TaskSeeder::class,
         ]);
     }
 }

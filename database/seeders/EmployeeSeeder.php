@@ -193,74 +193,57 @@ class EmployeeSeeder extends Seeder
             ->where('code', '421')
             ->value('id') ?? FinancialAccount::where('company_id', $company->id)->value('id');
 
-        $payments = [
-            [
-                'employee' => 'Andrei Popescu',
-                'amount' => 19500,
-                'paid_at' => Carbon::parse('2025-06-30 17:15:00'),
-                'note' => 'Salariu iunie 2025',
-            ],
-            [
-                'employee' => 'Ioana Marinescu',
-                'amount' => 16500,
-                'paid_at' => Carbon::parse('2025-06-30 17:20:00'),
-                'note' => 'Salariu iunie 2025',
-            ],
-            [
-                'employee' => 'Mihai Ionescu',
-                'amount' => 18000,
-                'paid_at' => Carbon::parse('2025-06-30 17:05:00'),
-                'note' => 'Salariu iunie 2025',
-            ],
-            [
-                'employee' => 'Larisa Dumitru',
-                'amount' => 12500,
-                'paid_at' => Carbon::parse('2025-06-30 17:25:00'),
-                'note' => 'Salariu iunie 2025',
-            ],
-            [
-                'employee' => 'George Petrescu',
-                'amount' => 20000,
-                'paid_at' => Carbon::parse('2025-06-30 17:00:00'),
-                'note' => 'Salariu iunie 2025',
-            ],
-        ];
+        $start = Carbon::now('Europe/Bucharest')->subYear()->startOfYear();
+        $end = Carbon::now('Europe/Bucharest')->endOfYear();
 
-        foreach ($payments as $payment) {
-            $employeeId = $employeeIds[$this->getEmailFromName($payment['employee'])] ?? null;
-            if (! $employeeId) {
-                continue;
+        $employees = Employee::whereIn('id', $employeeIds)->get();
+        $cursor = $start->copy();
+
+        while ($cursor->lte($end)) {
+            $monthEnd = $cursor->copy()->endOfMonth();
+            $paymentDate = $cursor->copy()->day(25)->setTime(17, 0);
+            $monthLabel = $cursor->isoFormat('MMMM YYYY');
+
+            foreach ($employees as $employee) {
+                if (Carbon::parse($employee->hired_at)->gt($monthEnd)) {
+                    continue;
+                }
+
+                $employeeId = $employee->id;
+                $note = "Salariu {$monthLabel}";
+
+                $transaction = FinancialTransaction::updateOrCreate(
+                    [
+                        'company_id' => $company->id,
+                        'financial_account_id' => $payrollAccountId,
+                        'occurred_at' => $paymentDate,
+                        'counterparty' => $employee->name,
+                    ],
+                    [
+                        'description' => $note,
+                        'direction' => 'debit',
+                        'amount' => $employee->salary,
+                        'currency' => $employee->currency,
+                        'tax_rate' => null,
+                        'metadata' => ['employee_id' => $employeeId],
+                    ],
+                );
+
+                EmployeePayment::updateOrCreate(
+                    [
+                        'employee_id' => $employeeId,
+                        'paid_at' => $paymentDate,
+                    ],
+                    [
+                        'amount' => $employee->salary,
+                        'currency' => $employee->currency,
+                        'note' => $note,
+                        'financial_transaction_id' => $transaction?->id,
+                    ],
+                );
             }
 
-            $transaction = FinancialTransaction::updateOrCreate(
-                [
-                    'company_id' => $company->id,
-                    'financial_account_id' => $payrollAccountId,
-                    'occurred_at' => $payment['paid_at'],
-                    'counterparty' => $payment['employee'],
-                ],
-                [
-                    'description' => $payment['note'],
-                    'direction' => 'debit',
-                    'amount' => $payment['amount'],
-                    'currency' => 'RON',
-                    'tax_rate' => null,
-                    'metadata' => ['employee_id' => $employeeId],
-                ],
-            );
-
-            EmployeePayment::updateOrCreate(
-                [
-                    'employee_id' => $employeeId,
-                    'paid_at' => $payment['paid_at'],
-                ],
-                [
-                    'amount' => $payment['amount'],
-                    'currency' => 'RON',
-                    'note' => $payment['note'],
-                    'financial_transaction_id' => $transaction?->id,
-                ],
-            );
+            $cursor->addMonth();
         }
     }
 
