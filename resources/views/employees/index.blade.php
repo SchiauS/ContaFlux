@@ -71,33 +71,18 @@
                                 </td>
                                 <td>
                                     <div class="d-flex flex-column gap-2">
-                                        <form class="d-flex align-items-center gap-2" method="POST" action="{{ route('employees.time-entries.store', $employee) }}">
-                                            @csrf
-                                            <input type="date" name="worked_on" class="form-control form-control-sm" value="{{ now()->toDateString() }}" required>
-                                            <input type="number" name="hours" class="form-control form-control-sm" step="0.25" min="0" max="24" placeholder="Ore" required>
-                                            <button class="btn btn-sm btn-outline-primary" type="submit">Pontaj</button>
-                                        </form>
-                                        <form class="d-flex align-items-center gap-2" method="POST" action="{{ route('employees.leaves.store', $employee) }}">
-                                            @csrf
-                                            <input type="text" name="type" class="form-control form-control-sm" placeholder="Tip concediu" required>
-                                            <input type="date" name="start_date" class="form-control form-control-sm" required>
-                                            <input type="date" name="end_date" class="form-control form-control-sm" required>
-                                            <button class="btn btn-sm btn-outline-warning text-dark" type="submit">Concediu</button>
-                                        </form>
-                                        <form class="d-flex align-items-center gap-2" method="POST" action="{{ route('employees.payroll', $employee) }}">
-                                            @csrf
-                                            <input type="number" step="0.01" min="0" name="amount" class="form-control form-control-sm"
-                                                   value="{{ $employee->salary }}" required>
-                                            <input type="date" name="paid_at" class="form-control form-control-sm" value="{{ now()->toDateString() }}" required>
-                                            <select name="financial_account_id" class="form-select form-select-sm" required>
-                                                <option value="">Cont</option>
-                                                @foreach($accounts as $account)
-                                                    <option value="{{ $account->id }}">{{ $account->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <button class="btn btn-sm btn-outline-success" type="submit">Salariu</button>
-                                        </form>
-                                        <div class="d-flex gap-2">
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#timeEntryModal-{{ $employee->id }}">
+                                                Pontaj
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning text-dark" type="button" data-bs-toggle="modal" data-bs-target="#leaveModal-{{ $employee->id }}">
+                                                Concediu
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success" type="button" data-bs-toggle="modal" data-bs-target="#payrollModal-{{ $employee->id }}">
+                                                Salariu
+                                            </button>
+                                        </div>
+                                        <div class="d-flex flex-wrap gap-2">
                                             @if($employee->status === 'active')
                                                 <form method="POST" action="{{ route('employees.terminate', $employee) }}">
                                                     @csrf
@@ -120,6 +105,114 @@
                                                 data-item-name="angajatul {{ $employee->name }}">
                                             <i class="fa-solid fa-trash"></i> Șterge
                                         </button>
+                                    </div>
+                                    <div class="modal fade" id="timeEntryModal-{{ $employee->id }}" tabindex="-1" aria-labelledby="timeEntryLabel-{{ $employee->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="timeEntryLabel-{{ $employee->id }}">Pontaj pentru {{ $employee->name }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form method="POST" action="{{ route('employees.time-entries.store', $employee) }}">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Data</label>
+                                                            <input type="date" name="worked_on" class="form-control" value="{{ now()->toDateString() }}" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Ore lucrate</label>
+                                                            <input type="number" name="hours" class="form-control" step="0.25" min="0" max="24" placeholder="Ore" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Notițe (opțional)</label>
+                                                            <input type="text" name="note" class="form-control" placeholder="Ex: proiect X">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Anulează</button>
+                                                        <button class="btn btn-primary" type="submit">Salvează pontaj</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="leaveModal-{{ $employee->id }}" tabindex="-1" aria-labelledby="leaveLabel-{{ $employee->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="leaveLabel-{{ $employee->id }}">Concediu pentru {{ $employee->name }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form method="POST" action="{{ route('employees.leaves.store', $employee) }}">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Tip concediu</label>
+                                                            <input type="text" name="type" class="form-control" placeholder="Tip concediu" required>
+                                                        </div>
+                                                        <div class="row g-3">
+                                                            <div class="col-sm-6">
+                                                                <label class="form-label">Începe</label>
+                                                                <input type="date" name="start_date" class="form-control" required>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label class="form-label">Se termină</label>
+                                                                <input type="date" name="end_date" class="form-control" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-3">
+                                                            <label class="form-label">Comentarii (opțional)</label>
+                                                            <textarea name="comment" class="form-control" rows="2" placeholder="Motiv, detalii"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Anulează</button>
+                                                        <button class="btn btn-warning text-dark" type="submit">Trimite solicitare</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="payrollModal-{{ $employee->id }}" tabindex="-1" aria-labelledby="payrollLabel-{{ $employee->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="payrollLabel-{{ $employee->id }}">Plată salariu către {{ $employee->name }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form method="POST" action="{{ route('employees.payroll', $employee) }}">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Suma</label>
+                                                            <input type="number" step="0.01" min="0" name="amount" class="form-control" value="{{ $employee->salary }}" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Data plății</label>
+                                                            <input type="date" name="paid_at" class="form-control" value="{{ now()->toDateString() }}" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Cont financiar</label>
+                                                            <select name="financial_account_id" class="form-select" required>
+                                                                <option value="">Selectează cont</option>
+                                                                @foreach($accounts as $account)
+                                                                    <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Detalii (opțional)</label>
+                                                            <input type="text" name="note" class="form-control" placeholder="Ex: bonus, perioadă, proiect">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Anulează</button>
+                                                        <button class="btn btn-success" type="submit">Procesează plata</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
