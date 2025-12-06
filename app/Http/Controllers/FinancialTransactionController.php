@@ -61,15 +61,12 @@ class FinancialTransactionController extends Controller
 
     public function show(FinancialTransaction $financialTransaction)
     {
-//        $this->authorizeCompany($financialTransaction->company_id);
         return $financialTransaction->load(['account', 'company']);
     }
 
     public function update(Request $request, FinancialTransaction $financialTransaction)
     {
         $companyId = $request->user()->company_id;
-
-        $this->authorizeCompany($financialTransaction->company_id);
 
         $data = $request->validate([
             'counterparty' => 'nullable|string',
@@ -114,7 +111,6 @@ class FinancialTransactionController extends Controller
 
     public function destroy(FinancialTransaction $financialTransaction)
     {
-//        $this->authorizeCompany($financialTransaction->company_id);
         $financialTransaction->delete();
 
         if (request()->wantsJson()) {
@@ -124,10 +120,4 @@ class FinancialTransactionController extends Controller
         return redirect()->route('transactions.index')->with('status', 'Tranzacția a fost ștearsă.');
     }
 
-    private function authorizeCompany(?int $companyId): void
-    {
-        if ($companyId === null || $companyId !== auth()->user()->company_id) {
-            abort(403, 'Nu ai acces la această tranzacție.');
-        }
-    }
 }
