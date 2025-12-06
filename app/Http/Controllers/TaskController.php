@@ -73,7 +73,20 @@ class TaskController extends Controller
             'priority' => 'nullable|string',
         ]);
 
-        $task->update($data);
+        $task->fill($data);
+
+        if (! $task->isDirty()) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Nu există modificări de salvat.',
+                    'task' => $task->load(['company', 'user']),
+                ]);
+            }
+
+            return redirect()->route('tasks.index')->with('status', 'Nu au fost efectuate modificări.');
+        }
+
+        $task->save();
 
         if ($request->wantsJson()) {
             return response()->json($task->load(['company', 'user']));
