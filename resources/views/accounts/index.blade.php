@@ -90,14 +90,11 @@
                                                     data-bs-toggle="collapse" data-bs-target="#editAccount-{{ $account->id }}">
                                                 <i class="fa-solid fa-pen"></i>
                                             </button>
-                                            <form method="POST" action="{{ route('accounts.destroy', $account) }}"
-                                                  onsubmit="return confirm('Sigur vrei să ștergi acest cont?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-sm btn-outline-danger" type="submit">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            <button class="btn btn-sm btn-outline-danger js-delete-trigger" type="button"
+                                                    data-delete-url="{{ route('accounts.destroy', $account) }}"
+                                                    data-item-name="acest cont">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>

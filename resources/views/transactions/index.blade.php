@@ -96,14 +96,11 @@
                                                 data-bs-toggle="collapse" data-bs-target="#editTransaction-{{ $transaction->id }}">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
-                                        <form method="POST" action="{{ route('transactions.destroy', $transaction) }}"
-                                              onsubmit="return confirm('Sigur vrei să ștergi această tranzacție?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger" type="submit">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        <button class="btn btn-sm btn-outline-danger js-delete-trigger" type="button"
+                                                data-delete-url="{{ route('transactions.destroy', $transaction) }}"
+                                                data-item-name="această tranzacție">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

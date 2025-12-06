@@ -113,14 +113,11 @@
                                                 data-bs-target="#editTask-{{ $task->id }}">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
-                                        <form method="POST" action="{{ route('tasks.destroy', $task) }}"
-                                              onsubmit="return confirm('Sigur vrei să ștergi acest task?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger" type="submit">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        <button class="btn btn-sm btn-outline-danger js-delete-trigger" type="button"
+                                                data-delete-url="{{ route('tasks.destroy', $task) }}"
+                                                data-item-name="acest task">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

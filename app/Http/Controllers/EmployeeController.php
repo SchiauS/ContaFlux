@@ -76,6 +76,19 @@ class EmployeeController extends Controller
         return back()->with('status', 'Datele angajatului au fost actualizate.');
     }
 
+    public function destroy(Request $request, Employee $employee)
+    {
+        $this->authorizeEmployee($request, $employee);
+
+        $employee->delete();
+
+        if ($request->wantsJson()) {
+            return response()->noContent();
+        }
+
+        return back()->with('status', 'Angajatul a fost șters.');
+    }
+
     public function terminate(Request $request, Employee $employee): RedirectResponse
     {
 //        $this->authorizeEmployee($request, $employee);
