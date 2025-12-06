@@ -11,7 +11,7 @@ class TaskSeeder extends Seeder
     public function run(): void
     {
         $company = Company::first() ?? Company::create([
-            'name' => 'ContaFlux Demo SRL',
+            'name' => 'URA Development SRL',
             'fiscal_code' => 'RO12345678',
             'currency' => 'RON',
             'fiscal_year_start' => '2025-01-01',
