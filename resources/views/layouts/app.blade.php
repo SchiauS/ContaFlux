@@ -196,6 +196,11 @@
     </div>
 </div>
 
+<form id="global-delete-form" method="POST" style="display:none">
+    @csrf
+    @method('DELETE')
+</form>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="{{ asset('argon/js/core/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('argon/js/plugins/perfect-scrollbar.min.js') }}"></script>
@@ -234,42 +239,14 @@
                 });
         });
 
-        let deleteUrl = null;
-        const deleteModalEl = document.getElementById('confirmDeleteModal');
-        const deleteModal = deleteModalEl ? new bootstrap.Modal(deleteModalEl) : null;
-
         $(document).on('click', '.js-delete-trigger', function () {
-            if (!deleteModal) {
-                return;
-            }
-
-            deleteUrl = $(this).data('delete-url');
-            const itemName = $(this).data('item-name') || 'acest element';
-            $('#deleteModalMessage').text(`Ești sigur că vrei să ștergi ${itemName}?`);
-            $('#deleteErrorAlert').addClass('d-none').text('');
-            $('#confirmDeleteBtn').prop('disabled', false).html('<i class="fa-solid fa-trash me-1"></i> Șterge');
-            deleteModal.show();
-        });
-
-        $('#confirmDeleteBtn').on('click', function () {
+            const deleteUrl = $(this).data('delete-url');
             if (!deleteUrl) {
                 return;
             }
-
-            const $btn = $(this);
-            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Se șterge');
-
-            $.ajax({
-                url: deleteUrl,
-                method: 'DELETE'
-            }).done(function () {
-                window.location.reload();
-            }).fail(function (xhr) {
-                const message = xhr.responseJSON?.message || 'Ștergerea a eșuat. Încearcă din nou.';
-                $('#deleteErrorAlert').removeClass('d-none').text(message);
-            }).always(function () {
-                $btn.prop('disabled', false).html('<i class="fa-solid fa-trash me-1"></i> Șterge');
-            });
+            const form = document.getElementById('global-delete-form');
+            form.setAttribute('action', deleteUrl);
+            form.submit();
         });
     }
 </script>
