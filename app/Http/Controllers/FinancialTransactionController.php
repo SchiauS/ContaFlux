@@ -59,14 +59,18 @@ class FinancialTransactionController extends Controller
         return redirect()->route('transactions.index')->with('status', 'Tranzacția a fost înregistrată.');
     }
 
-    public function show(FinancialTransaction $financialTransaction)
+    public function show(Request $request, FinancialTransaction $financialTransaction)
     {
+        $this->assertSameCompany($request, $financialTransaction);
+
         return $financialTransaction->load(['account', 'company']);
     }
 
     public function update(Request $request, FinancialTransaction $financialTransaction)
     {
         $companyId = $request->user()->company_id;
+
+        $this->assertSameCompany($request, $financialTransaction);
 
         $data = $request->validate([
             'counterparty' => 'nullable|string',
@@ -118,6 +122,8 @@ class FinancialTransactionController extends Controller
 
     public function destroy(FinancialTransaction $financialTransaction)
     {
+        $this->assertSameCompany(request(), $financialTransaction);
+
         $financialTransaction->delete();
 
         if (request()->wantsJson()) {
@@ -125,6 +131,11 @@ class FinancialTransactionController extends Controller
         }
 
         return redirect()->route('transactions.index')->with('status', 'Tranzacția a fost ștearsă.');
+    }
+
+    private function assertSameCompany(Request $request, FinancialTransaction $financialTransaction): void
+    {
+        abort_unless($financialTransaction->company_id === $request->user()->company_id, 403);
     }
 
 }
