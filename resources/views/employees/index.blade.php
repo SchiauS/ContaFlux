@@ -115,6 +115,11 @@
                                                 Istoric
                                             </button>
                                         </div>
+                                        <button class="btn btn-sm btn-outline-danger align-self-start js-delete-trigger" type="button"
+                                                data-delete-url="{{ route('employees.destroy', $employee) }}"
+                                                data-item-name="angajatul {{ $employee->name }}">
+                                            <i class="fa-solid fa-trash"></i> Șterge
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

@@ -148,6 +148,27 @@
     </div>
 </main>
 
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel">Confirmare ștergere</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Închide"></button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteModalMessage" class="mb-2">Ești sigur că vrei să ștergi acest element?</p>
+                <div class="alert alert-danger d-none" id="deleteErrorAlert"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Renunță</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fa-solid fa-trash me-1"></i> Șterge
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="aiAssistantModal" tabindex="-1" aria-labelledby="aiAssistantLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -211,6 +232,44 @@
                 .always(function () {
                     $btn.prop('disabled', false).html('<i class="fa-solid fa-paper-plane me-1"></i> Trimite');
                 });
+        });
+
+        let deleteUrl = null;
+        const deleteModalEl = document.getElementById('confirmDeleteModal');
+        const deleteModal = deleteModalEl ? new bootstrap.Modal(deleteModalEl) : null;
+
+        $(document).on('click', '.js-delete-trigger', function () {
+            if (!deleteModal) {
+                return;
+            }
+
+            deleteUrl = $(this).data('delete-url');
+            const itemName = $(this).data('item-name') || 'acest element';
+            $('#deleteModalMessage').text(`Ești sigur că vrei să ștergi ${itemName}?`);
+            $('#deleteErrorAlert').addClass('d-none').text('');
+            $('#confirmDeleteBtn').prop('disabled', false).html('<i class="fa-solid fa-trash me-1"></i> Șterge');
+            deleteModal.show();
+        });
+
+        $('#confirmDeleteBtn').on('click', function () {
+            if (!deleteUrl) {
+                return;
+            }
+
+            const $btn = $(this);
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Se șterge');
+
+            $.ajax({
+                url: deleteUrl,
+                method: 'DELETE'
+            }).done(function () {
+                window.location.reload();
+            }).fail(function (xhr) {
+                const message = xhr.responseJSON?.message || 'Ștergerea a eșuat. Încearcă din nou.';
+                $('#deleteErrorAlert').removeClass('d-none').text(message);
+            }).always(function () {
+                $btn.prop('disabled', false).html('<i class="fa-solid fa-trash me-1"></i> Șterge');
+            });
         });
     }
 </script>
