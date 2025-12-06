@@ -175,8 +175,8 @@
                     </table>
                 </div>
                 @if($tasks->hasPages())
-                    <div class="card-footer">
-                        {{ $tasks->links() }}
+                    <div class="card-footer d-flex justify-content-center">
+                        {{ $tasks->links('pagination::bootstrap-5') }}
                     </div>
                 @endif
             </div>
