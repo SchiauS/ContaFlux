@@ -29,8 +29,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 
     Route::resource('companies', CompanyController::class)->only(['index', 'update']);
-    Route::resource('accounts', FinancialAccountController::class);
-    Route::resource('transactions', FinancialTransactionController::class);
+    Route::resource('accounts', FinancialAccountController::class)
+        ->parameters(['accounts' => 'financialAccount']);
+    Route::resource('transactions', FinancialTransactionController::class)
+        ->parameters(['transactions' => 'financialTransaction']);
     Route::resource('employees', EmployeeController::class);
     Route::post('/employees/{employee}/time-entries', [EmployeeController::class, 'storeTimeEntry'])->name('employees.time-entries.store');
     Route::post('/employees/{employee}/leaves', [EmployeeController::class, 'storeLeave'])->name('employees.leaves.store');
