@@ -93,7 +93,10 @@
                                 <td class="text-end">
                                     <div class="btn-group" role="group">
                                         <button class="btn btn-sm btn-outline-primary" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#editTransaction-{{ $transaction->id }}">
+                                                data-bs-toggle="collapse" data-bs-target="#editTransaction-{{ $transaction->id }}"
+                                                data-edit-transaction
+                                                data-target="#editTransaction-{{ $transaction->id }}"
+                                                data-current-account="{{ $transaction->financial_account_id }}">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
                                         <button class="btn btn-sm btn-outline-danger js-delete-trigger" type="button"
@@ -112,8 +115,12 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <label class="form-label text-sm">Cont</label>
-                                                <select name="financial_account_id" class="form-select" disabled>
-                                                    <option>{{ optional($transaction->account)->code ?? 'N/A' }}</option>
+                                                <select name="financial_account_id" class="form-select">
+                                                    @foreach($accounts as $id => $code)
+                                                        <option value="{{ $id }}" @selected($transaction->financial_account_id == $id)>
+                                                            {{ $code }}
+                                                        </option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
