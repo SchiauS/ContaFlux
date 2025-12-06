@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $company = Company::firstOrCreate(
-            ['name' => 'Nebula Dev Studio SRL'],
+            ['name' => 'URA Development SRL'],
             [
                 'fiscal_code' => 'RO98765432',
                 'currency' => 'RON',
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'schiau.m.sebastianadrian25@stud.rau.ro'],
             [
                 'name' => 'Schiau Sebastian-Adrian',
-                'password' => bcrypt('password'),
+                'password' => bcrypt('parola123'),
                 'company_id' => $company->id,
             ],
         );

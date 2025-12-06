@@ -11,24 +11,13 @@ class TaskSeeder extends Seeder
 {
     public function run(): void
     {
-        $company = Company::firstOrCreate(
-            ['name' => 'Nebula Dev Studio SRL'],
-            [
-                'fiscal_code' => 'RO98765432',
-                'currency' => 'RON',
-                'fiscal_year_start' => '2025-01-01',
-                'timezone' => 'Europe/Bucharest',
-            ],
-        );
-
-        $user = User::firstOrCreate(
-            ['email' => 'schiau.m.sebastianadrian25@stud.rau.ro'],
-            [
-                'name' => 'Schiau Sebastian-Adrian',
-                'password' => bcrypt('password'),
-                'company_id' => $company->id,
-            ],
-        );
+        $company = Company::first() ?? Company::create([
+            'name' => 'URA Development SRL',
+            'fiscal_code' => 'RO12345678',
+            'currency' => 'RON',
+            'fiscal_year_start' => '2025-01-01',
+            'timezone' => 'Europe/Bucharest',
+        ]);
 
         $tasks = [
             [
