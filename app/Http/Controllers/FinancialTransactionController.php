@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FinancialAccount;
 use App\Models\FinancialTransaction;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class FinancialTransactionController extends Controller
 {
@@ -66,7 +67,10 @@ class FinancialTransactionController extends Controller
 
     public function update(Request $request, FinancialTransaction $financialTransaction)
     {
-//        $this->authorizeCompany($financialTransaction->company_id);
+        $companyId = $request->user()->company_id;
+
+        $this->authorizeCompany($financialTransaction->company_id);
+
         $data = $request->validate([
             'counterparty' => 'nullable|string',
             'description' => 'nullable|string',
@@ -76,9 +80,17 @@ class FinancialTransactionController extends Controller
             'tax_rate' => 'nullable|numeric',
             'occurred_at' => 'date',
             'metadata' => 'array',
+            'financial_account_id' => [
+                'sometimes',
+                'required',
+                'integer',
+                Rule::exists('financial_accounts', 'id')->where('company_id', $companyId),
+            ],
         ]);
 
         $financialTransaction->fill($data);
+
+        $financialTransaction->company_id = $companyId;
 
         if (! $financialTransaction->isDirty()) {
             if ($request->wantsJson()) {
