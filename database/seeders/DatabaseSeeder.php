@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             FinancialAccountSeeder::class,
             FinancialTransactionSeeder::class,
             TaskSeeder::class,
+            EmployeeSeeder::class,
         ]);
     }
 }
