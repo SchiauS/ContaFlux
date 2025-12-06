@@ -85,7 +85,9 @@ class FinancialTransactionController extends Controller
             ],
         ]);
 
-        $data['financial_account_id'] = $data['financial_account_id'] ?? $financialTransaction->financial_account_id;
+        if (array_key_exists('financial_account_id', $data)) {
+            $data['financial_account_id'] = $data['financial_account_id'] ?? $financialTransaction->financial_account_id;
+        }
 
         $financialTransaction->fill($data);
 
