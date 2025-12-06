@@ -153,8 +153,8 @@
                     </div>
                 </div>
                 @if($accounts->hasPages())
-                    <div class="card-footer">
-                        {{ $accounts->links() }}
+                    <div class="card-footer d-flex justify-content-center">
+                        {{ $accounts->links('pagination::bootstrap-5') }}
                     </div>
                 @endif
             </div>
