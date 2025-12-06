@@ -49,6 +49,7 @@ class TaskSeeder extends Seeder
                 'priority' => 'low',
             ],
         ];
+        $user = User::firstWhere('email', 'schiau.m.sebastianadrian25@stud.rau.ro');
 
         foreach ($tasks as $task) {
             Task::updateOrCreate(
