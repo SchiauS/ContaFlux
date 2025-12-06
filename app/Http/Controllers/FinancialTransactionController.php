@@ -87,10 +87,6 @@ class FinancialTransactionController extends Controller
 
         $data['financial_account_id'] = $data['financial_account_id'] ?? $financialTransaction->financial_account_id;
 
-        if (! FinancialAccount::where('company_id', $companyId)->whereKey($data['financial_account_id'])->exists()) {
-            abort(403, 'Contul selectat nu aparține companiei tale.');
-        }
-
         $financialTransaction->fill($data);
 
         $financialTransaction->company_id = $companyId;
