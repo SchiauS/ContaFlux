@@ -241,22 +241,22 @@
             autoUpdateInput: false,
             minYear: 2018,
             maxYear: <?= (int)date("Y")+5 ?>,
-            minDate: moment().add(1, 'days'),
             locale: {
                 format: 'YYYY-MM-DD',
                 applyLabel: "Aplică",
                 cancelLabel: "Șterge",
-                customRangeLabel: "Selectează intervalul",
+                customRangeLabel: "Selectează perioada",
                 daysOfWeek: ['Du', 'Lu', 'Ma', 'Mi', 'Jo', 'Vi', 'Sâ'],
                 monthNames: ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'],
                 firstDay: 1
             },
             ranges: {
-                'Weekend-ul viitor': [moment().add(5, 'days'), moment().add(7, 'days')],
-                'Săptămâna aceasta': [moment().startOf('week').add(1, 'day'), moment().endOf('week').add(1, 'day')],
+                'Săptămâna aceasta': [moment().startOf('isoWeek'), moment().endOf('isoWeek')],
+                'Săptămâna trecută': [moment().subtract(1, 'week').startOf('isoWeek'), moment().subtract(1, 'week').endOf('isoWeek')],
                 'Luna aceasta': [moment().startOf('month'), moment().endOf('month')],
-                'Luna viitoare': [moment().add(1, 'month').startOf('month'), moment().add(1, 'month').endOf('month')],
-                'Anul acesta': [moment().startOf('year'), moment().endOf('year')]
+                'Luna trecută': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Anul acesta': [moment().startOf('year'), moment().endOf('year')],
+                'Anul trecut': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
             }
         };
 
@@ -270,7 +270,7 @@
         $('#date_range').daterangepicker(filterDate);
 
         $('#date_range').on('apply.daterangepicker', function(ev, picker) {
-            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' → ' + picker.endDate.format('YYYY-MM-DD'));
+            $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY'));
             $('#start_date').val(picker.startDate.format('YYYY-MM-DD'));
             $('#end_date').val(picker.endDate.format('YYYY-MM-DD'));
             $('#error_daterange').addClass('d-none');
