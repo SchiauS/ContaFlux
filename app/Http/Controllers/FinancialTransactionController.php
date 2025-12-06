@@ -85,8 +85,11 @@ class FinancialTransactionController extends Controller
             ],
         ]);
 
+        $currentAccount = $request->input('current_financial_account_id');
         if (array_key_exists('financial_account_id', $data)) {
-            $data['financial_account_id'] = $data['financial_account_id'] ?? $financialTransaction->financial_account_id;
+            $data['financial_account_id'] = $data['financial_account_id'] ?? $currentAccount ?? $financialTransaction->financial_account_id;
+        } elseif ($currentAccount) {
+            $data['financial_account_id'] = $currentAccount;
         }
 
         $financialTransaction->fill($data);

@@ -239,11 +239,31 @@
                 });
         });
 
+        let deleteUrl = null;
+        const deleteModalEl = document.getElementById('confirmDeleteModal');
+        const deleteModal = deleteModalEl ? new bootstrap.Modal(deleteModalEl) : null;
+
         $(document).on('click', '.js-delete-trigger', function () {
-            const deleteUrl = $(this).data('delete-url');
+            if (!deleteModal) {
+                return;
+            }
+
+            deleteUrl = $(this).data('delete-url');
+            const itemName = $(this).data('item-name') || 'acest element';
+            $('#deleteModalMessage').text(`Ești sigur că vrei să ștergi ${itemName}?`);
+            $('#deleteErrorAlert').addClass('d-none').text('');
+            $('#confirmDeleteBtn').prop('disabled', false).html('<i class="fa-solid fa-trash me-1"></i> Șterge');
+            deleteModal.show();
+        });
+
+        $('#confirmDeleteBtn').on('click', function () {
             if (!deleteUrl) {
                 return;
             }
+
+            const $btn = $(this);
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Se șterge');
+
             const form = document.getElementById('global-delete-form');
             form.setAttribute('action', deleteUrl);
             form.submit();

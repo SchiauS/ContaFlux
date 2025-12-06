@@ -115,13 +115,14 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <label class="form-label text-sm">Cont</label>
-                                                <select name="financial_account_id" class="form-select">
+                                                <select name="financial_account_id" class="form-select" required>
                                                     @foreach($accounts as $id => $code)
                                                         <option value="{{ $id }}" @selected($transaction->financial_account_id == $id)>
                                                             {{ $code }}
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                                <input type="hidden" name="current_financial_account_id" value="{{ $transaction->financial_account_id }}">
                                             </div>
                                             <div class="col-md-4">
                                                 <label class="form-label text-sm">Direcție</label>
