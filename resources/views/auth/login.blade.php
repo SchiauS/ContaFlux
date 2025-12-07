@@ -8,7 +8,7 @@
         @csrf
         <div class="form-group my-3">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
+            <input type="email" class="form-control" name="email" value="schiau.m.sebastianadrian25@stud.rau.ro" required autofocus>
         </div>
         @error('email')
         <small class="text-danger d-block mb-2">{{ $message }}</small>
@@ -16,7 +16,7 @@
 
         <div class="form-group mb-3">
             <label class="form-label">Parolă</label>
-            <input type="password" class="form-control" name="password" required>
+            <input type="password" class="form-control" name="password" value="parola123" required>
         </div>
 
         <div class="form-check form-switch d-flex align-items-center mb-3">
