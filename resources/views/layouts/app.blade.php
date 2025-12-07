@@ -123,19 +123,19 @@
                         </button>
                     </form>
                 </div>
-                <ul class="navbar-nav  justify-content-end">
+                <ul class="navbar-nav justify-content-end ms-3">
                     <li class="nav-item d-flex align-items-center">
                         <a href="javascript:;" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" class="nav-link text-white font-weight-bold px-0">
                             <i class="fa fa-user me-sm-1"></i>
                             <span class="d-sm-inline d-none">{{ auth()->user()->name }}</span>
                         </a>
-                        <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                            <li class="mb-2">
-                                <a class="dropdown-item border-radius-md" href="{{ route('logout') }}">
-                                    <i class="fa-solid fa-right-from-bracket me-1"></i> Delogare
-                                </a>
-                            </li>
-                        </ul>
+{{--                        <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">--}}
+{{--                            <li class="mb-2">--}}
+{{--                                <a class="dropdown-item border-radius-md" href="{{ route('logout') }}">--}}
+{{--                                    <i class="fa-solid fa-right-from-bracket me-1"></i> Delogare--}}
+{{--                                </a>--}}
+{{--                            </li>--}}
+{{--                        </ul>--}}
                     </li>
                     <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                         <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
