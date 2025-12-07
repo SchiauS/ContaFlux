@@ -61,8 +61,8 @@
                                     <input type="text" name="currency" class="form-control" placeholder="RON" maxlength="3">
                                 </div>
                                 <div class="col-md-3 d-grid">
-                                    <button class="btn btn-outline-primary" type="submit">
-                                        <i class="fa-solid fa-file-import me-1 mb-0"></i> Încarcă
+                                    <button class="btn btn-outline-primary mb-0" type="submit">
+                                        <i class="fa-solid fa-file-import me-1"></i> Încarcă
                                     </button>
                                 </div>
                             </div>
