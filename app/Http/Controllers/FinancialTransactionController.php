@@ -230,6 +230,57 @@ class FinancialTransactionController extends Controller
         return redirect()->route('transactions.index')->with('status', 'Tranzacția a fost ștearsă.');
     }
 
+    public function export(Request $request)
+    {
+        $companyId = $request->user()->company_id;
+
+        $transactions = FinancialTransaction::with('account')
+            ->where('company_id', $companyId)
+            ->orderBy('occurred_at')
+            ->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="transactions.csv"',
+        ];
+
+        $columns = [
+            'Data',
+            'Cont',
+            'Descriere',
+            'Direcție',
+            'Sumă',
+            'Monedă',
+            'Partener',
+            'Sold',
+            'Categorie cont',
+        ];
+
+        $callback = static function () use ($transactions, $columns) {
+            $handle = fopen('php://output', 'wb');
+
+            fputcsv($handle, $columns);
+
+            foreach ($transactions as $transaction) {
+                fputcsv($handle, [
+                    optional($transaction->occurred_at)->format('Y-m-d'),
+                    optional($transaction->account)->code,
+                    $transaction->description,
+                    $transaction->direction,
+                    $transaction->amount,
+                    $transaction->currency,
+                    $transaction->counterparty,
+                    $transaction->metadata['balance'] ?? null,
+                    optional($transaction->account)->category,
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     private function detectFormat(UploadedFile $file): string
     {
         $extension = strtolower($file->getClientOriginalExtension());
