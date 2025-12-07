@@ -31,7 +31,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('companies', CompanyController::class)->only(['index', 'update']);
     Route::resource('accounts', FinancialAccountController::class)
         ->parameters(['accounts' => 'financialAccount']);
-    Route::get('transactions/export', [FinancialTransactionController::class, 'export'])->name('transactions.export');
     Route::post('transactions/import', [FinancialTransactionController::class, 'import'])->name('transactions.import');
     Route::resource('transactions', FinancialTransactionController::class)
         ->parameters(['transactions' => 'financialTransaction']);

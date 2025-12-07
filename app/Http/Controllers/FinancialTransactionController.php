@@ -47,42 +47,6 @@ class FinancialTransactionController extends Controller
         ]);
     }
 
-    public function export(Request $request)
-    {
-        $companyId = $request->user()->company_id;
-
-        $transactions = FinancialTransaction::with('account')
-            ->where('company_id', $companyId)
-            ->orderBy('occurred_at')
-            ->get();
-
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="transactions.csv"',
-        ];
-
-        $callback = function () use ($transactions) {
-            $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['Data', 'Număr cont', 'Descriere', 'Direcție', 'Sumă', 'Monedă', 'Sold']);
-
-            foreach ($transactions as $transaction) {
-                fputcsv($handle, [
-                    optional($transaction->occurred_at)->format('Y-m-d'),
-                    optional($transaction->account)->code,
-                    $transaction->description,
-                    $transaction->direction,
-                    $transaction->amount,
-                    $transaction->currency,
-                    $transaction->metadata['balance'] ?? null,
-                ]);
-            }
-
-            fclose($handle);
-        };
-
-        return response()->streamDownload($callback, 'transactions.csv', $headers);
-    }
-
     public function import(Request $request)
     {
         $validated = $request->validate([

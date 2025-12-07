@@ -69,6 +69,39 @@
                         </form>
                     </div>
                 </div>
+                <div class="border-bottom p-4 bg-light">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                        <div class="me-md-4">
+                            <div class="fw-semibold mb-1">Import tranzacții din CSV/XLSX</div>
+                            <p class="text-sm mb-2">Fișierul trebuie să conțină coloanele: dată, număr cont, descriere, debit/credit, sumă, sold. Fluxul aplică automat detectarea formatului, validări numerice, filtrarea datelor incomplete și maparea conturilor pe categorii înainte de inserarea în baza de date.</p>
+                            <ul class="text-sm mb-0 ps-3">
+                                <li>Detectare format (CSV/XLSX) și normalizare date calendaristice.</li>
+                                <li>Validare numerică pentru câmpurile „sumă” și „sold”.</li>
+                                <li>Filtrare rânduri fără dată, cont, direcție sau sumă.</li>
+                                <li>Mapare conturi pe categorii (active, datorii, stocuri, costuri, venituri) pentru conturile existente.</li>
+                                <li>Inserare doar pentru rândurile valide și conturile mapate companiei.</li>
+                            </ul>
+                        </div>
+                        <form class="w-100 w-md-50" method="POST" action="{{ route('transactions.import') }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-6">
+                                    <label class="form-label text-sm mb-1">Fișier tranzacții</label>
+                                    <input type="file" name="transactions_file" class="form-control" accept=".csv,.xlsx" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-sm mb-1">Monedă implicită</label>
+                                    <input type="text" name="currency" class="form-control" placeholder="RON" maxlength="3">
+                                </div>
+                                <div class="col-md-3 d-grid">
+                                    <button class="btn btn-outline-primary" type="submit">
+                                        <i class="fa-solid fa-file-import me-1"></i> Încarcă
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <div id="createTransactionForm" class="collapse border-bottom">
                     <form class="p-4" method="POST" action="{{ route('transactions.store') }}">
                         @csrf
