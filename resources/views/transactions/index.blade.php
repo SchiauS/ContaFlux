@@ -27,9 +27,47 @@
                         <h5 class="mb-0">Tranzacții financiare</h5>
                         <span class="text-sm text-muted d-inline-block">Companie: {{ $company->name }}</span>
                     </div>
-                    <button class="btn btn-primary btn-sm mt-3 mt-md-0" type="button" data-bs-toggle="collapse" data-bs-target="#createTransactionForm">
-                        <i class="fa-solid fa-plus me-1"></i> Adaugă
-                    </button>
+                    <div class="d-flex gap-2 mt-3 mt-md-0">
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ route('transactions.export') }}">
+                            <i class="fa-solid fa-file-export me-1"></i> Exportă
+                        </a>
+                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#createTransactionForm">
+                            <i class="fa-solid fa-plus me-1"></i> Adaugă
+                        </button>
+                    </div>
+                </div>
+                <div class="border-bottom p-4 bg-light">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                        <div class="me-md-4">
+                            <div class="fw-semibold mb-1">Import tranzacții din CSV/XLSX</div>
+                            <p class="text-sm mb-2">Fișierul trebuie să conțină coloanele: dată, număr cont, descriere, debit/credit, sumă, sold. Fluxul aplică automat detectarea formatului, validări numerice, filtrarea datelor incomplete și maparea conturilor pe categorii înainte de inserarea în baza de date.</p>
+                            <ul class="text-sm mb-0 ps-3">
+                                <li>Detectare format (CSV/XLSX) și normalizare date calendaristice.</li>
+                                <li>Validare numerică pentru câmpurile „sumă” și „sold”.</li>
+                                <li>Filtrare rânduri fără dată, cont, direcție sau sumă.</li>
+                                <li>Mapare conturi pe categorii (active, datorii, stocuri, costuri, venituri) pentru conturile existente.</li>
+                                <li>Inserare doar pentru rândurile valide și conturile mapate companiei.</li>
+                            </ul>
+                        </div>
+                        <form class="w-100 w-md-50" method="POST" action="{{ route('transactions.import') }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-6">
+                                    <label class="form-label text-sm mb-1">Fișier tranzacții</label>
+                                    <input type="file" name="transactions_file" class="form-control" accept=".csv,.xlsx" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-sm mb-1">Monedă implicită</label>
+                                    <input type="text" name="currency" class="form-control" placeholder="RON" maxlength="3">
+                                </div>
+                                <div class="col-md-3 d-grid">
+                                    <button class="btn btn-outline-primary" type="submit">
+                                        <i class="fa-solid fa-file-import me-1"></i> Încarcă
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="border-bottom p-4 bg-light">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
@@ -115,12 +153,48 @@
                 <div class="table-responsive">
                     <table class="table align-items-center mb-0">
                         <thead>
+                        @php
+                            $currentSort = $currentSort ?? request('sort', 'occurred_at');
+                            $currentDirection = $currentDirection ?? request('direction', 'desc');
+                            $directionFor = function (string $column) use ($currentSort, $currentDirection) {
+                                if ($currentSort === $column) {
+                                    return $currentDirection === 'asc' ? 'desc' : 'asc';
+                                }
+
+                                return 'asc';
+                            };
+                        @endphp
                         <tr>
-                            <th>Descriere</th>
-                            <th>Cont</th>
-                            <th>Direcție</th>
-                            <th>Suma</th>
-                            <th>Data</th>
+                            <th>
+                                <a class="text-decoration-none text-reset d-flex align-items-center gap-1" href="{{ route('transactions.index', array_merge(request()->query(), ['sort' => 'description', 'direction' => $directionFor('description')])) }}">
+                                    Descriere
+                                    <i class="fa-solid fa-arrow-{{ $currentSort === 'description' && $currentDirection === 'desc' ? 'down' : 'up' }}-wide-short {{ $currentSort === 'description' ? '' : 'text-muted' }}"></i>
+                                </a>
+                            </th>
+                            <th>
+                                <a class="text-decoration-none text-reset d-flex align-items-center gap-1" href="{{ route('transactions.index', array_merge(request()->query(), ['sort' => 'account', 'direction' => $directionFor('account')])) }}">
+                                    Cont
+                                    <i class="fa-solid fa-arrow-{{ $currentSort === 'account' && $currentDirection === 'desc' ? 'down' : 'up' }}-wide-short {{ $currentSort === 'account' ? '' : 'text-muted' }}"></i>
+                                </a>
+                            </th>
+                            <th>
+                                <a class="text-decoration-none text-reset d-flex align-items-center gap-1" href="{{ route('transactions.index', array_merge(request()->query(), ['sort' => 'direction', 'direction' => $directionFor('direction')])) }}">
+                                    Direcție
+                                    <i class="fa-solid fa-arrow-{{ $currentSort === 'direction' && $currentDirection === 'desc' ? 'down' : 'up' }}-wide-short {{ $currentSort === 'direction' ? '' : 'text-muted' }}"></i>
+                                </a>
+                            </th>
+                            <th>
+                                <a class="text-decoration-none text-reset d-flex align-items-center gap-1" href="{{ route('transactions.index', array_merge(request()->query(), ['sort' => 'amount', 'direction' => $directionFor('amount')])) }}">
+                                    Suma
+                                    <i class="fa-solid fa-arrow-{{ $currentSort === 'amount' && $currentDirection === 'desc' ? 'down' : 'up' }}-wide-short {{ $currentSort === 'amount' ? '' : 'text-muted' }}"></i>
+                                </a>
+                            </th>
+                            <th>
+                                <a class="text-decoration-none text-reset d-flex align-items-center gap-1" href="{{ route('transactions.index', array_merge(request()->query(), ['sort' => 'occurred_at', 'direction' => $directionFor('occurred_at')])) }}">
+                                    Data
+                                    <i class="fa-solid fa-arrow-{{ $currentSort === 'occurred_at' && $currentDirection === 'desc' ? 'down' : 'up' }}-wide-short {{ $currentSort === 'occurred_at' ? '' : 'text-muted' }}"></i>
+                                </a>
+                            </th>
                             <th class="text-end">Acțiuni</th>
                         </tr>
                         </thead>

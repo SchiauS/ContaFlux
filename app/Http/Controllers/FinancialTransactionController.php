@@ -17,9 +17,20 @@ class FinancialTransactionController extends Controller
     {
         $companyId = $request->user()->company_id;
 
+        $allowedSorts = [
+            'occurred_at' => 'occurred_at',
+            'description' => 'description',
+            'amount' => 'amount',
+            'direction' => 'direction',
+            'account' => 'financial_account_id',
+        ];
+
+        $sortColumn = $allowedSorts[$request->get('sort', 'occurred_at')] ?? 'occurred_at';
+        $direction = in_array($request->get('direction'), ['asc', 'desc']) ? $request->get('direction') : 'desc';
+
         $transactions = FinancialTransaction::with(['account', 'company'])
             ->where('company_id', $companyId)
-            ->orderByDesc('occurred_at')
+            ->orderBy($sortColumn, $direction)
             ->paginate()
             ->withQueryString();
 
@@ -31,6 +42,8 @@ class FinancialTransactionController extends Controller
             'transactions' => $transactions,
             'company' => \App\Models\Company::findOrFail($companyId),
             'accounts' => \App\Models\FinancialAccount::where('company_id', $companyId)->orderBy('code')->pluck('code', 'id'),
+            'currentSort' => $request->get('sort', 'occurred_at'),
+            'currentDirection' => $direction,
         ]);
     }
 
