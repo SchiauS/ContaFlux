@@ -10,6 +10,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class FinancialTransactionController extends Controller
 {
@@ -239,11 +240,6 @@ class FinancialTransactionController extends Controller
             ->orderBy('occurred_at')
             ->get();
 
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="transactions.csv"',
-        ];
-
         $columns = [
             'Data',
             'Cont',
@@ -256,29 +252,36 @@ class FinancialTransactionController extends Controller
             'Categorie cont',
         ];
 
-        $callback = static function () use ($transactions, $columns) {
-            $handle = fopen('php://output', 'wb');
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
-            fputcsv($handle, $columns);
+        $sheet->fromArray($columns, null, 'A1');
 
-            foreach ($transactions as $transaction) {
-                fputcsv($handle, [
-                    optional($transaction->occurred_at)->format('Y-m-d'),
-                    optional($transaction->account)->code,
-                    $transaction->description,
-                    $transaction->direction,
-                    $transaction->amount,
-                    $transaction->currency,
-                    $transaction->counterparty,
-                    $transaction->metadata['balance'] ?? null,
-                    optional($transaction->account)->category,
-                ]);
-            }
+        $row = 2;
 
-            fclose($handle);
+        foreach ($transactions as $transaction) {
+            $sheet->fromArray([
+                optional($transaction->occurred_at)->format('Y-m-d'),
+                optional($transaction->account)->code,
+                $transaction->description,
+                $transaction->direction,
+                $transaction->amount,
+                $transaction->currency,
+                $transaction->counterparty,
+                $transaction->metadata['balance'] ?? null,
+                optional($transaction->account)->category,
+            ], null, "A{$row}");
+
+            $row++;
+        }
+
+        $callback = static function () use ($spreadsheet) {
+            IOFactory::createWriter($spreadsheet, 'Xlsx')->save('php://output');
         };
 
-        return response()->stream($callback, 200, $headers);
+        return response()->streamDownload($callback, 'transactions.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     private function detectFormat(UploadedFile $file): string
