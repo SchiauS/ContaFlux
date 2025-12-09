@@ -29,6 +29,8 @@ class DashboardController extends Controller
             ->where('company_id', $companyId)
             ->whereBetween('occurred_at', [now()->startOfYear(), now()->endOfYear()]);
 
+        $lifetimeQuery = FinancialTransaction::query()->where('company_id', $companyId);
+
         $stats['periods'] = [
             'month' => [
                 'label' => 'Luna curentă',
@@ -47,8 +49,9 @@ class DashboardController extends Controller
         }
         unset($periodStats);
 
-        $defaultPeriod = 'month';
-        $stats['balance'] = $stats['periods'][$defaultPeriod]['balance'];
+        $defaultPeriod = 'year';
+        $stats['balance'] = (clone $lifetimeQuery)->where('direction', 'credit')->sum('amount') -
+            (clone $lifetimeQuery)->where('direction', 'debit')->sum('amount');
 
         $recentTransactions = FinancialTransaction::with('company')
             ->where('company_id', $companyId)
