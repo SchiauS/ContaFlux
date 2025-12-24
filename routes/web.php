@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FinancialAccountController;
 use App\Http\Controllers\FinancialTransactionController;
+use App\Http\Controllers\GlobalViewController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ReportsController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/summary', [DashboardController::class, 'summary'])->name('dashboard.summary');
 
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
+
+    Route::prefix('pro/global')->name('global.')->group(function () {
+        Route::get('/companies', [GlobalViewController::class, 'companies'])->name('companies');
+        Route::get('/users', [GlobalViewController::class, 'users'])->name('users');
+        Route::get('/reports', [GlobalViewController::class, 'reports'])->name('reports');
+    });
 
     Route::resource('companies', CompanyController::class)->only(['index', 'update']);
     Route::resource('accounts', FinancialAccountController::class)
