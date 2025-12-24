@@ -97,6 +97,34 @@
                     <span class="nav-link-text ms-1">Task-uri</span>
                 </a>
             </li>
+
+            <li class="nav-item mt-3">
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">PRO</h6>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('global.companies') ? 'active' : '' }}" href="{{ route('global.companies') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-building-circle-check text-primary"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Global View: Companii</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('global.users') ? 'active' : '' }}" href="{{ route('global.users') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-user-shield text-primary"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Global View: Utilizatori</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('global.reports') ? 'active' : '' }}" href="{{ route('global.reports') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-chart-bar text-primary"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Global View: Rapoarte</span>
+                </a>
+            </li>
         </ul>
     </div>
 </aside>
